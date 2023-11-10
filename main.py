@@ -191,7 +191,14 @@ def checkWhatBlocksToRemove():
 def removeGivenBlocks(blocksToRemove):
     global puzzleBoard
 
-    # TODO: Stuff
+    # For every row in the puzzle
+    for y in range(puzzleBoard.shape[0]):
+        # For every column in the puzzle
+        for x in range(puzzleBoard.shape[1]):
+            # If the piece is marked to be removed
+            if blocksToRemove[y][x] == 1:
+                # Remove the piece
+                puzzleBoard[y][x] = 0
 
 
 # Makes all blocks that need to fall down in the puzzle board fall down
