@@ -21,6 +21,7 @@ movesToSolve = []
 # Recursive function that solves the puzzle
 def solve():
     global puzzleBoard
+    global movesToSolve
     checkForWin()
 
     # For every row in the puzzle
@@ -29,15 +30,13 @@ def solve():
         for x in range(puzzleBoard.shape[1]):
             # If the piece is a movable piece
             if puzzleBoard[y][x] > 0:
-                # Check if the piece can be moved in any direction
+                # Check if the piece can be moved up or right
+                # There is no need to check down or left as those would be
+                # another piece's up or right respectively
                 if checkValidMove(y, x, y - 1, x):  # Up
                     executeMove(y, x, y - 1, x)
                 if checkValidMove(y, x, y, x + 1):  # Right
                     executeMove(y, x, y, x + 1)
-                if checkValidMove(y, x, y + 1, x):  # Down
-                    executeMove(y, x, y + 1, x)
-                if checkValidMove(y, x, y, x - 1):  # Left
-                    executeMove(y, x, y, x - 1)
 
     # If the puzzle is impossible
     if not movesToSolve:
@@ -55,6 +54,7 @@ def checkValidMove(y1, x1, y2, x2):
 # Input coordinates y1, x1 to be swapped with y2, x2
 def executeMove(y1, x1, y2, x2):
     global puzzleBoard
+    global movesToSolve
 
     # Add the move to the move list
     movesToSolve.append([str(y1) + ',' + str(x1), str(y2) + ',' + str(x2)])
@@ -85,6 +85,9 @@ def recalculateBoard():
 
 # Checks if the board is in a winning state and if it is, print the solution
 def checkForWin():
+    global puzzleBoard
+    global movesToSolve
+
     if np.max(puzzleBoard) < 1:
         print('The solution is:')
 
