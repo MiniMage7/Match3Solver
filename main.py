@@ -5,11 +5,25 @@ import numpy as np
 # -1's are immovable objects
 # Any other number is a specific block. Matching #'s are the same block type.
 # All block numbers must be positive integers
-puzzleBoard = np.array([[0, 0, 1, 0, 0, 0],
-                        [0, 2, 1, 0, 0, 0],
-                        [3, 4, 2, 5, 0, 0],
-                        [4, 5, 5, 6, 3, 0],
-                        [4, 2, 6, 1, 6, 3]])
+
+# 10x10 array to copy as needed
+# puzzleBoard = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
+
+puzzleBoard = np.array([[0, 0, 0, 1, 2, 3, 4, 2, 0],
+                        [0, 0, 0, 5, 1, 2, 3, 4, 0],
+                        [0, 0, 0, 3, 4, 5, 1, 6, 0],
+                        [7, 7, 5, 6, 3, 4, 5, 1, 7],
+                        [-1, -1, -1, 3, 4, 5, 1, 6, 2],
+                        [-1, -1, -1, 5, 1, 2, 3, 4, 2]])
 
 # Stores the solution to the puzzle
 movesToSolve = []
@@ -116,7 +130,7 @@ def executeMove(y1, x1, y2, x2):
     # Save the current board state
     oldBoardState = puzzleBoard.copy()
 
-    # Execute the move and recalculate the new puzzleBoard
+    # Execute the move and recalculate the new puzzle board
     tempValue = puzzleBoard[y1, x1]
     puzzleBoard[y1, x1] = puzzleBoard[y2, x2]
     puzzleBoard[y2, x2] = tempValue
@@ -136,7 +150,7 @@ def executeMove(y1, x1, y2, x2):
 # Recursively calls itself until no pieces move
 def recalculateBoard():
     # Get what blocks need to be removed
-    blocksToRemove = checkWhatBlocksToRemove()  # Return array of 0's and 1's where 1's are blocks to remove
+    blocksToRemove = checkWhatBlocksToRemove()
     # If there are blocks to remove
     if blocksToRemove.any():
         # Remove the blocks
@@ -199,6 +213,9 @@ def removeGivenBlocks(blocksToRemove):
 
 
 # Makes all blocks that need to fall down in the puzzle board fall down
+# Moves all blocks with air under them down 1
+# Recursively calls itself until no blocks move
+# Blockers (-1s) do not fall
 def calculateGravity():
     global puzzleBoard
 
