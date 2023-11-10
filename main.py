@@ -138,7 +138,44 @@ def executeMove(y1, x1, y2, x2):
 # Then rearranges the board to account for pieces falling
 # Recursively calls itself until no pieces move
 def recalculateBoard():
-    pass
+    # Get what blocks need to be removed
+    blocksToRemove = checkWhatBlocksToRemove()  # Return array of 0's and 1's where 1's are blocks to remove
+    # If there are blocks to remove
+    if not blocksToRemove.any():
+        # Remove the blocks
+        removeGivenBlocks(blocksToRemove)
+        # Make all the blocks fall down
+        calculateGravity()
+        # Restart this process
+        recalculateBoard()
+
+
+# Iterates over the whole puzzle board and returns what blocks need to be removed
+# Return: An 2d array of 0s and 1s where 1s represent the positions where blocks need to be removed
+def checkWhatBlocksToRemove():
+    global puzzleBoard
+
+    blocksToRemove = np.zeros(puzzleBoard.shape)
+
+    # TODO: Stuff
+
+    return blocksToRemove
+
+
+# Takes an array of 1's and 0's
+# Removes all blocks from the puzzle board where the given array has a 1 in the same position
+# Used with checkWhatBlocksToRemove()
+def removeGivenBlocks(blocksToRemove):
+    global puzzleBoard
+
+    # TODO: Stuff
+
+
+# Makes all blocks that need to fall down in the puzzle board fall down
+def calculateGravity():
+    global puzzleBoard
+
+    # TODO: Stuff
 
 
 # Checks if the board is in a winning state and if it is, print the solution
