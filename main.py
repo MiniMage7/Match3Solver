@@ -157,7 +157,30 @@ def checkWhatBlocksToRemove():
 
     blocksToRemove = np.zeros(puzzleBoard.shape)
 
-    # TODO: Stuff
+    # For every row in the puzzle
+    for y in range(puzzleBoard.shape[0]):
+        # For every column in the puzzle
+        for x in range(puzzleBoard.shape[1]):
+            # If the piece is a removable piece
+            if puzzleBoard[y][x] > 0:
+                # We only have to check for these 2 because all the other circumstances will be checked
+                # in another piece's 2 above or 2 to the right
+
+                # Check if it can be matched with the 2 pieces above it
+                if y - 2 >= 0:
+                    if puzzleBoard[y - 2, x] == puzzleBoard[y - 1, x] == puzzleBoard[y, x]:
+                        # Mark the pieces to be removed
+                        blocksToRemove[y - 2, x] = 1
+                        blocksToRemove[y - 1, x] = 1
+                        blocksToRemove[y, x] = 1
+
+                # Check if it can be matched with the 2 pieces to the right of it
+                if x + 2 < puzzleBoard.shape[1]:
+                    if puzzleBoard[y, x] == puzzleBoard[y, x + 1] == puzzleBoard[y, x + 2]:
+                        # Mark the pieces to be removed
+                        blocksToRemove[y, x] = 1
+                        blocksToRemove[y, x + 1] = 1
+                        blocksToRemove[y, x + 2] = 1
 
     return blocksToRemove
 
