@@ -5,14 +5,11 @@ import numpy as np
 # -1's are immovable objects
 # Any other number is a specific block. Matching #'s are the same block type.
 # All block numbers must be positive integers
-puzzleBoard = np.array([[1, 2, 3, 0, 0, 0, 0, 0],
-                        [7, 7, 7, 0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0, 0, 0, 0]])
+puzzleBoard = np.array([[0, 0, 1, 0, 0, 0],
+                        [0, 2, 1, 0, 0, 0],
+                        [3, 4, 2, 5, 0, 0],
+                        [4, 5, 5, 6, 3, 0],
+                        [4, 2, 6, 1, 6, 3]])
 
 # Stores the solution to the puzzle
 movesToSolve = []
@@ -141,7 +138,7 @@ def recalculateBoard():
     # Get what blocks need to be removed
     blocksToRemove = checkWhatBlocksToRemove()  # Return array of 0's and 1's where 1's are blocks to remove
     # If there are blocks to remove
-    if not blocksToRemove.any():
+    if blocksToRemove.any():
         # Remove the blocks
         removeGivenBlocks(blocksToRemove)
         # Make all the blocks fall down
@@ -220,7 +217,8 @@ def calculateGravity():
                     didBlocksMove = True
 
     # If any blocks moved, check if any more gravity is needed
-    calculateGravity()
+    if didBlocksMove:
+        calculateGravity()
 
 
 # Checks if the board is in a winning state and if it is, print the solution
