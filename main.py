@@ -205,7 +205,22 @@ def removeGivenBlocks(blocksToRemove):
 def calculateGravity():
     global puzzleBoard
 
-    # TODO: Stuff
+    didBlocksMove = False
+
+    # For every row in the puzzle (bottom to top, skipping the bottom most row)
+    for y in range(puzzleBoard.shape[0] - 2, -1, -1):
+        # For every column in the puzzle
+        for x in range(puzzleBoard.shape[1]):
+            # If the piece is effected by gravity
+            if puzzleBoard[y][x] > 0:
+                # If there is air below it
+                if puzzleBoard[y + 1][x] == 0:
+                    # Move it down to that block
+                    puzzleBoard[y + 1][x] = puzzleBoard[y][x]
+                    didBlocksMove = True
+
+    # If any blocks moved, check if any more gravity is needed
+    calculateGravity()
 
 
 # Checks if the board is in a winning state and if it is, print the solution
