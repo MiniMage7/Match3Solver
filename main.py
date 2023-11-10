@@ -214,6 +214,7 @@ def calculateGravity():
                 if puzzleBoard[y + 1][x] == 0:
                     # Move it down to that block
                     puzzleBoard[y + 1][x] = puzzleBoard[y][x]
+                    puzzleBoard[y][x] = 0
                     didBlocksMove = True
 
     # If any blocks moved, check if any more gravity is needed
@@ -232,8 +233,8 @@ def checkForWin():
         for move in movesToSolve:
             print('Swap: ' + move[0] + ' with ' + move[1])
 
-        print('\nMoves are coordinates with 0,0 being the top left, '
-              '1,0 being below it, '
+        print('\nMoves are coordinates with 0,0 being the top left; '
+              '1,0 being below it; '
               'and 0,1 being to the right of 0,0')
 
         quit()
