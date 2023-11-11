@@ -49,11 +49,6 @@ def solve():
                 if checkValidMove(y, x, y, x + 1):  # Right
                     executeMove(y, x, y, x + 1)
 
-    # If the puzzle is impossible
-    if not movesToSolve:
-        print('There is no solution')
-        quit()
-
 
 # Checks if a move is a valid move
 # Input coordinates y1, x1 to be swapped with y2, x2
@@ -260,3 +255,6 @@ def checkForWin():
 # Main
 if __name__ == '__main__':
     solve()
+
+    # If the code got here the puzzle is impossible
+    print('There is no solution')
