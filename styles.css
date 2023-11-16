@@ -1,0 +1,102 @@
+html {
+    font-family: sans-serif;
+}
+
+body {
+  width: 90%;
+  max-width: 900px;
+  margin: 2em auto;
+  font: .9em/1.2 Arial, Helvetica, sans-serif;
+}
+
+.containerwrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  display: inline-grid;
+  border: 2px solid black;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.gridsizecontainer {
+  display: inline-grid;
+  grid-template-columns: auto auto auto;
+  column-gap: 6px;
+  padding-bottom: 20px;
+}
+
+.griditemsizecontainer {
+  display: flex;
+  align-items: center;
+  font-size: large;
+}
+
+.sizeinput input[type="number"] {
+  width: 20px;
+  height: 30px;
+  font-size: large;
+  text-align: center;
+}
+
+/* Input box: Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Input box: Firefox */
+input[type=number] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.tile {
+  border: 2px solid black;
+  height: 40px;
+  width: 40px;
+  cursor: pointer;
+}
+
+.c-1 {background-color: #000000;}
+.c-1:hover {background-color: #1a1a1a;}
+
+.c0 {background-color: #FFFFFF;}
+.c0:hover {background-color: #ddd;}
+
+.c1 {background-color: #1100DF;}
+.c1:hover {background-color: #0B0094;}
+
+.c2 {background-color: #A12BDB;}
+.c2:hover {background-color: #721B9D;}
+
+.c3 {background-color: #FF48DE;}
+.c3:hover {background-color: #E000B8;}
+
+.c4 {background-color: #EE0E00;}
+.c4:hover {background-color: #BD0B00;}
+
+.c5 {background-color: #FF8C00;}
+.c5:hover {background-color: #C26A00;}
+
+.c6 {background-color: #FFDD00;}
+.c6:hover {background-color: #CCB100;}
+
+.c7 {background-color: #8DDC0D;}
+.c7:hover {background-color: #6FAD0A;}
+
+.c8 {background-color: #06F2ED;}
+.c8:hover {background-color: #04A9A6;}
+
+.c9 {background-color: #000066;}
+.c9:hover {background-color: #003330;}
+
+.c10 {background-color: #976739;}
+.c10:hover {background-color: #604224;}
