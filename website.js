@@ -62,12 +62,14 @@ function cChange(e) {
   let cNumber = Number(getCNumber(e.target));
   let newCNumber = cNumber;
 
+  // If shift is being held go down
   if (e.shiftKey) {
     newCNumber = cNumber - 1;
     if (newCNumber < -1) {
       newCNumber = 10;
     }
-  } else {
+  } // Otherwise go up by 1
+  else {
     newCNumber = cNumber + 1;
     if (newCNumber > 10) {
       newCNumber = -1;
@@ -82,16 +84,19 @@ function getCNumber(tile) {
   return tile.className.replace("tile", "").replace("c", "").trim()
 }
 
+// If the mouse is down on a tile enter, treat it as a click
 function mouseEnterTile(e) {
   if (isMouseDown) {
     cChange(e);
   }
 }
 
+// Keeps track of if the mouse is being pressed
 function mouseDown(e) {
   isMouseDown = true;
 }
 
+// Keeps track of if the mouse is being pressed
 function mouseUp(e) {
   isMouseDown = false;
 }

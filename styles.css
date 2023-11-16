@@ -1,5 +1,5 @@
 html {
-    font-family: sans-serif;
+  font-family: sans-serif;
 }
 
 body {
@@ -9,12 +9,14 @@ body {
   font: .9em/1.2 Arial, Helvetica, sans-serif;
 }
 
+/* A wrapper that centers anything in it horizontally */
 .containerwrapper {
   width: 100%;
   display: flex;
   justify-content: center;
 }
 
+/* Container for the grid that contains the tiles */
 .container {
   display: inline-grid;
   border: 2px solid black;
@@ -25,6 +27,7 @@ body {
   -ms-user-select: none;
 }
 
+/* The wrapper around the width height and x to make them look proper */
 .gridsizecontainer {
   display: inline-grid;
   grid-template-columns: auto auto auto;
@@ -32,12 +35,14 @@ body {
   padding-bottom: 20px;
 }
 
+/* The wrapper around the "x" in between the midth and height */
 .griditemsizecontainer {
   display: flex;
   align-items: center;
   font-size: large;
 }
 
+/* Input for width and height */
 .sizeinput input[type="number"] {
   width: 20px;
   height: 30px;
