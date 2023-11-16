@@ -116,3 +116,16 @@ input[type=number] {
 
 .c10 {background-color: #976739;}
 .c10:hover {background-color: #604224;}
+
+/* Help diamond */
+.helpdiamond {
+  background-image: url("images/InfoBlock.png");
+  background-size: contain;
+  width: 50px;
+  height: 50px;
+}
+
+/* Help diamond hover */
+.helpdiamond:hover {
+  background-image: url("images/InfoBlockHover.png");
+}
