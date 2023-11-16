@@ -121,7 +121,7 @@ def executeMove(y1, x1, y2, x2):
     global movesToSolve
 
     # Add the move to the move list
-    movesToSolve.append([str(y1) + ',' + str(x1), str(y2) + ',' + str(x2)])
+    movesToSolve.append([f'{y1},{x1}', f'{y2},{x2}'])
     # Save the current board state
     oldBoardState = puzzleBoard.copy()
 
@@ -243,7 +243,7 @@ def checkForWin():
         print('The solution is:')
 
         for move in movesToSolve:
-            print('Swap: ' + move[0] + ' with ' + move[1])
+            print(f'Swap: {move[0]} with {move[1]}')
 
         print('\nMoves are coordinates with 0,0 being the top left; '
               '1,0 being below it; '
