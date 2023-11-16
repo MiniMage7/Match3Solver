@@ -16,14 +16,14 @@ body {
 }
 
 /* A wrapper that centers anything in it horizontally */
-.containerwrapper {
+.horizontalcenterwrapper {
   width: 100%;
   display: flex;
   justify-content: center;
 }
 
 /* Container for the grid that contains the tiles */
-.container {
+.tilecontainer {
   display: inline-grid;
   border: 2px solid black;
   -webkit-user-drag: none;
