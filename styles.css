@@ -4,9 +4,15 @@ html {
 
 body {
   width: 90%;
-  max-width: 900px;
+  max-width: 1200px;
   margin: 2em auto;
   font: .9em/1.2 Arial, Helvetica, sans-serif;
+}
+
+/* Grid that contains all objects on the website */
+.maingrid {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
 }
 
 /* A wrapper that centers anything in it horizontally */
@@ -25,6 +31,11 @@ body {
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
+}
+
+/* Make text areas not resizeable */
+textarea {
+  resize: none;
 }
 
 /* The wrapper around the width height and x to make them look proper */
@@ -100,7 +111,7 @@ input[type=number] {
 .c8 {background-color: #06F2ED;}
 .c8:hover {background-color: #04A9A6;}
 
-.c9 {background-color: #000066;}
+.c9 {background-color: #006861;}
 .c9:hover {background-color: #003330;}
 
 .c10 {background-color: #976739;}

@@ -19,13 +19,13 @@ function updateGridSize() {
   let oldHeight = height;
 
   // Make sure the changed values are in acceptable ranges
-  if (gridSizeBoxes[0].children[0].value > 20) {
-    gridSizeBoxes[0].children[0].value = 20;
+  if (gridSizeBoxes[0].children[0].value > 15) {
+    gridSizeBoxes[0].children[0].value = 15;
   } else if (gridSizeBoxes[0].children[0].value < 0) {
     gridSizeBoxes[0].children[0].value = 0; 
   }
-  if (gridSizeBoxes[1].children[0].value > 20) {
-    gridSizeBoxes[1].children[0].value = 20;
+  if (gridSizeBoxes[1].children[0].value > 15) {
+    gridSizeBoxes[1].children[0].value = 15;
   } else if (gridSizeBoxes[1].children[0].value < 0) {
     gridSizeBoxes[1].children[0].value = 0; 
   }
