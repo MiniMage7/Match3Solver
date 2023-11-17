@@ -117,9 +117,18 @@ input[type=number] {
 .c10 {background-color: #976739;}
 .c10:hover {background-color: #604224;}
 
-/* Help diamond */
+/* Help diamond */ 
 .helpdiamond {
-  background-image: url("images/InfoBlock.png");
+  background-image: url("images/help-diamond.png");
+  background-size: contain;
+  width: 50px;
+  height: 50px;
+}
+
+/* Image shown when help diamond is hovered */
+/* Set up this way to avoid flickering on first image hover */
+.helpdiamondhover {
+  background-image: url("images/help-diamond-hovered.png");
   background-size: contain;
   width: 50px;
   height: 50px;
@@ -127,5 +136,5 @@ input[type=number] {
 
 /* Help diamond hover */
 .helpdiamond:hover {
-  background-image: url("images/InfoBlockHover.png");
+  opacity: 0%;
 }
