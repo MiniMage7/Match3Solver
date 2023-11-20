@@ -41,7 +41,7 @@ function updateGridSize() {
   width = Number(widthBox.value);
   height = Number(heightBox.value);
 
-  const tileContainer = document.getElementsByClassName("tilecontainer")[0];
+  const tileContainer = document.getElementById("tilecontainer");
 
   // Resize grid
   tileContainer.style.gridTemplateColumns = "repeat(" + String(width) + ", auto)";

@@ -12,7 +12,7 @@ body {
 /* TODO: Rewrite this with ID's */
 
 /* Grid that contains all objects on the website */
-.maingrid {
+#maingrid {
   display: grid;
   grid-template-columns: 4fr 1fr;
 }
@@ -25,7 +25,7 @@ body {
 }
 
 /* Container for the grid that contains the tiles */
-.tilecontainer {
+#tilecontainer {
   display: inline-grid;
   border: 2px solid black;
   -webkit-user-drag: none;
@@ -41,7 +41,7 @@ textarea {
 }
 
 /* The wrapper around the width height and x to make them look proper */
-.gridsizecontainer {
+#gridsizecontainer {
   display: inline-grid;
   grid-template-columns: auto auto auto;
   column-gap: 6px;
@@ -120,7 +120,7 @@ input[type=number] {
 .c10:hover {background-color: #604224;}
 
 /* Help diamond */ 
-.helpdiamond {
+#helpdiamond {
   background-image: url("images/help-diamond.png");
   background-size: contain;
   width: 50px;
@@ -129,7 +129,7 @@ input[type=number] {
 
 /* Image shown when help diamond is hovered */
 /* Set up this way to avoid flickering on first image hover */
-.helpdiamondhover {
+#helpdiamondhover {
   background-image: url("images/help-diamond-hovered.png");
   background-size: contain;
   width: 50px;
@@ -137,12 +137,12 @@ input[type=number] {
 }
 
 /* Help diamond hover */
-.helpdiamond:hover {
+#helpdiamond:hover {
   opacity: 0%;
 }
 
 /* Overlay over page to put the help information */
-.helparea {
+#helparea {
   position: fixed; /* Sit on top of the page content */
   display: none; /* Hidden by default */
   width: 100%; /* Covers the whole page */
@@ -157,7 +157,7 @@ input[type=number] {
 }
 
 /* White box to put informational text on */
-.helpareatext {
+#helpareatext {
   position: fixed;
   display: block;
   width: 40%;
