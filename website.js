@@ -1,4 +1,5 @@
 // Initialize the grid
+const tileContainer = document.getElementById("tilecontainer");
 const gridSizeBoxes = document.getElementsByClassName("sizeinput");
 const widthBox = gridSizeBoxes[0].children[0];
 const heightBox = gridSizeBoxes[1].children[0];
@@ -20,6 +21,12 @@ const helpArea = document.getElementById("helparea");
 document.getElementById("helpdiamond").addEventListener("click", showHelpArea);
 helpArea.addEventListener("click", hideHelpArea);
 
+// Add clear button event
+document.getElementById("clear").addEventListener("click", clearGrid);
+
+// Add solve puzzle event
+document.getElementById("solve").addEventListener("click", solveGrid);
+
 // When the grid size boxes are update, adds or removes tiles as needed
 function updateGridSize() {
   let oldWidth = width;
@@ -40,8 +47,6 @@ function updateGridSize() {
 
   width = Number(widthBox.value);
   height = Number(heightBox.value);
-
-  const tileContainer = document.getElementById("tilecontainer");
 
   // Resize grid
   tileContainer.style.gridTemplateColumns = "repeat(" + String(width) + ", auto)";
@@ -89,7 +94,7 @@ function cChange(e) {
 
 // Returns the value of the current class
 function getCNumber(tile) {
-  return tile.className.replace("tile", "").replace("c", "").trim()
+  return tile.className.replace("tile", "").replace("c", "").trim();
 }
 
 // If the mouse is down on a tile enter, treat it as a click
@@ -108,6 +113,26 @@ function mouseDown(e) {
 function mouseUp(e) {
   isMouseDown = false;
 }
+
+// Makes all the tiles white (c0)
+function clearGrid(e) {
+  let tiles = tileContainer.getElementsByClassName("tile");
+
+  // For each tile
+  for (let index = 0; index < tiles.length; index++) {
+    const tile = tiles[index];
+    // Get the tiles c number
+    let cNumber = Number(getCNumber(tile));
+    // Replace its c class with c0
+    tile.classList.replace("c" + cNumber, "c0");
+  }
+}
+
+// TODO: 
+function solveGrid(e) {
+  
+}
+
 
 // Shows the help rules
 function showHelpArea(e) {
