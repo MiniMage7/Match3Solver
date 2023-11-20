@@ -7,7 +7,7 @@ let height = 0;
 updateGridSize();
 
 // Give the input boxes event handlers
-widthBox.addEventListener("change", updateGridSize); // TODO: Make this cleaner
+widthBox.addEventListener("change", updateGridSize);
 heightBox.addEventListener("change", updateGridSize);
 
 // For determining if the mouse is being held down

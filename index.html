@@ -12,8 +12,28 @@
     <div id="helparea">
       <div id="helpareatext">
         <h2>How to Use</h2>
+        <h3>Input</h3>
 
-        <p>This is a test.</p>
+        <p>Change the width and height of the grid using the boxes above the grid. (0-15)</p>
+        <p>Clicking a box changes the color of the box. Shift clicking cycles backwards.</p>
+        <p>White boxes are empty space and black boxes are immovable blockers.</p>
+        <p>All other colors are objects that will match 3 normally.</p>
+
+        <h3>Output</h3>
+
+        <p>The output is a list of swaps that need to be performed.</p>
+        <p>Cordinates are height, width; 0,0 is the top left corner.</p>
+        <p>1,0 is the block below 0,0 and 0,1 is the block to the right of 0,0.</p>
+
+        <h3>Other Information</h3>
+
+        <p>The rules are the same as the game Islands of Insight.</p>
+        <p>Tiles can only be swapped with another tile, so they can't be swapped with black or white.</p>
+        <p>Tiles are removed if after a swap they're in a 3, 4, or 5 in a row.</p>
+        <p>After tiles are removed from a swap, all remaining tiles fall down to fill any empty space.</p>
+        <p>If gravity causes another match 3, 4, or 5, the process repeats until there are no more matches.</p>
+        <p>The puzzle is considered solved when there are no colored blocks remaining.</p>
+
       </div>
     </div>
 
