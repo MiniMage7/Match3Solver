@@ -1,12 +1,14 @@
 // Initialize the grid
 const gridSizeBoxes = document.getElementsByClassName("sizeinput");
+const widthBox = gridSizeBoxes[0].children[0];
+const heightBox = gridSizeBoxes[1].children[0];
 let width = 0;
 let height = 0;
 updateGridSize();
 
 // Give the input boxes event handlers
-gridSizeBoxes[0].children[0].addEventListener("change", updateGridSize); // TODO: Make this cleaner
-gridSizeBoxes[1].children[0].addEventListener("change", updateGridSize);
+widthBox.addEventListener("change", updateGridSize); // TODO: Make this cleaner
+heightBox.addEventListener("change", updateGridSize);
 
 // For determining if the mouse is being held down
 let isMouseDown = false;
@@ -24,19 +26,20 @@ function updateGridSize() {
   let oldHeight = height;
 
   // Make sure the changed values are in acceptable ranges
-  if (gridSizeBoxes[0].children[0].value > 15) {
-    gridSizeBoxes[0].children[0].value = 15;
-  } else if (gridSizeBoxes[0].children[0].value < 0) {
-    gridSizeBoxes[0].children[0].value = 0; 
+  const maxSize = 15;
+  if (widthBox.value > maxSize) {
+    widthBox.value = maxSize;
+  } else if (widthBox.value < 0) {
+    widthBox.value = 0; 
   }
-  if (gridSizeBoxes[1].children[0].value > 15) {
-    gridSizeBoxes[1].children[0].value = 15;
-  } else if (gridSizeBoxes[1].children[0].value < 0) {
-    gridSizeBoxes[1].children[0].value = 0; 
+  if (heightBox.value > maxSize) {
+    heightBox.value = maxSize;
+  } else if (heightBox.value < 0) {
+    heightBox.value = 0; 
   }
 
-  width = Number(gridSizeBoxes[0].children[0].value);
-  height = Number(gridSizeBoxes[1].children[0].value);
+  width = Number(widthBox.value);
+  height = Number(heightBox.value);
 
   const tileContainer = document.getElementsByClassName("tilecontainer")[0];
 
