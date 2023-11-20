@@ -116,5 +116,7 @@ function showHelpArea(e) {
 
 // Hides the help area
 function hideHelpArea(e) {
-  helpArea.style.display = "none";
+  if (e.target.id == "helparea") {
+    helpArea.style.display = "none";
+  }
 }
