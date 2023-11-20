@@ -31,6 +31,7 @@ body {
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
+  margin-bottom: 20px;
 }
 
 /* Make text areas not resizeable */
@@ -169,4 +170,11 @@ input[type=number] {
   padding-left: 10px;
   padding-right: 10px;
   cursor: default;
+}
+
+/* Change button formatting */
+button {
+  font-size: large;
+  padding: 10px 20px;
+  margin: 0px 40px;
 }
