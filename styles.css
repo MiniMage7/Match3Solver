@@ -9,6 +9,8 @@ body {
   font: .9em/1.2 Arial, Helvetica, sans-serif;
 }
 
+/* TODO: Rewrite this with ID's */
+
 /* Grid that contains all objects on the website */
 .maingrid {
   display: grid;
@@ -137,4 +139,36 @@ input[type=number] {
 /* Help diamond hover */
 .helpdiamond:hover {
   opacity: 0%;
+}
+
+/* Overlay over page to put the help information */
+.helparea {
+  position: fixed; /* Sit on top of the page content */
+  display: none; /* Hidden by default */
+  width: 100%; /* Covers the whole page */
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 2;
+  cursor: pointer;
+}
+
+/* White box to put informational text on */
+.helpareatext {
+  position: fixed;
+  display: block;
+  width: 40%;
+  height: 94%;
+  top: 3%;
+  left: 30%;
+  right: 30%;
+  bottom: 3%;
+  background-color: #FFFFFF;
+  border: 3px solid #000000;
+  padding-left: 10px;
+  padding-right: 10px;
+  cursor: default;
 }

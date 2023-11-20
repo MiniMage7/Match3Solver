@@ -5,13 +5,18 @@ let height = 0;
 updateGridSize();
 
 // Give the input boxes event handlers
-gridSizeBoxes[0].children[0].addEventListener("change", updateGridSize);
+gridSizeBoxes[0].children[0].addEventListener("change", updateGridSize); // TODO: Make this cleaner
 gridSizeBoxes[1].children[0].addEventListener("change", updateGridSize);
 
 // For determining if the mouse is being held down
 let isMouseDown = false;
 document.addEventListener("mousedown", mouseDown);
 document.addEventListener("mouseup", mouseUp);
+
+// Help button events
+const helpArea = document.getElementById("helparea");
+document.getElementById("helpdiamond").addEventListener("click", showHelpArea);
+helpArea.addEventListener("click", hideHelpArea);
 
 // When the grid size boxes are update, adds or removes tiles as needed
 function updateGridSize() {
@@ -99,4 +104,14 @@ function mouseDown(e) {
 // Keeps track of if the mouse is being pressed
 function mouseUp(e) {
   isMouseDown = false;
+}
+
+// Shows the help rules
+function showHelpArea(e) {
+  helpArea.style.display = "block";
+}
+
+// Hides the help area
+function hideHelpArea(e) {
+  helpArea.style.display = "none";
 }
