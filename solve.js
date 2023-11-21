@@ -96,7 +96,46 @@ function checkValidMove(y1, x1, y2, x2) {
 // Takes an x and y coordinate of the puzzle board
 // Checks if that piece should be removed
 function checkIfBlocksRemoved(y, x) {
+    // If it matches with the 2 blocks above it
+    if (y - 2 >= 0) {
+        if (puzzleBoard[y - 2][x] == puzzleBoard[y - 1][x] && puzzleBoard[y - 1][x] == puzzleBoard[y][x]) {
+            return true;
+        }
+    }
+    // If it matches with 1 block above it and 1 below it
+    if (y - 1 >= 0 && y + 1 < height) {
+        if (puzzleBoard[y - 1][x] == puzzleBoard[y][x] && puzzleBoard[y][x] == puzzleBoard[y + 1][x]) {
+            return true;
+        }
+    }
+    // If it matches with the 2 blocks below it
+    if (y + 2 < height) {
+        if (puzzleBoard[y][x] == puzzleBoard[y + 1][x] && puzzleBoard[y + 1][x] == puzzleBoard[y + 2][x]) {
+            return true;
+        }
+    }
 
+    // If it matches with the 2 blocks to the left of it
+    if (x - 2 >= 0) {
+        if (puzzleBoard[y][x - 2] == puzzleBoard[y][x - 1] && puzzleBoard[y][x - 1] == puzzleBoard[y][x]) {
+            return true;
+        }
+    }
+    // If it matches with the block to the left and to the right of it
+    if (x - 1 >= 0 && x + 1 < width) {
+        if (puzzleBoard[y][x - 1] == puzzleBoard[y][x] && puzzleBoard[y][x] == puzzleBoard[y][x + 1]) {
+            return true;
+        }
+    }
+    // If it matches with the 2 blocks to the right of it
+    if (x + 2 < width) {
+        if (puzzleBoard[y][x] == puzzleBoard[y][x + 1] && puzzleBoard[y][x + 1] == puzzleBoard[y][x + 2]) {
+            return true;
+        }
+    }
+
+    // If none of the moves resulted in blocks being removed
+    return false;
 }
 
 // Executes a given move on the board
