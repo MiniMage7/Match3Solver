@@ -128,11 +128,9 @@ function clearGrid(e) {
   }
 }
 
-// TODO: 
 function solveGrid(e) {
-  
+  startSolve();
 }
-
 
 // Shows the help rules
 function showHelpArea(e) {
