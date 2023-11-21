@@ -141,9 +141,33 @@ function checkIfBlocksRemoved(y, x) {
 // Executes a given move on the board
 // Input coordinates y1, x1 to be swapped with y2, x2
 function executeMove(y1, x1, y2, x2) {
+    // Add the move to the move list
+    movesToSolve.push([`${y1}, ${x1}`, `${y2}, ${x2}`]);
+    // Save the current board state
+    const oldBoardState = JSON.parse(JSON.stringify(puzzleBoard));
 
+    // Execute the move and recalculate the new puzzle board
+    tempValue = puzzleBoard[y1][x1];
+    puzzleBoard[y1][x1] = puzzleBoard[y2][x2];
+    puzzleBoard[y2][x2] = tempValue;
+    recalculateBoard();
+
+    // Attempt to do the next move
+    solve();
+
+    // If this line was reached, the move was inccorect, so revert to the old board state
+    puzzleBoard.length = 0;
+    puzzleBoard = JSON.parse(JSON.stringify(oldBoardState));
+    // And remove the move from the move list
+    movesToSolve.pop()
 }
 
+// Check if there are any pieces that need to be removed and removes them
+// Then rearranges the board to account for pieces falling
+// Recursively calls itself until no pieces move
+function recalculateBoard() {
+
+}
 
 // Checks if any values in the array are greater than 0
 // If there are none, the puzzle is solved and calls output solution
