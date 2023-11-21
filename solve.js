@@ -57,10 +57,10 @@ function solve() {
                 // another piece's up or right respectively
 
                 if (checkValidMove(y, x, y - 1, x)) { // Up
-                    executeMove(y, x, y - 1, x)
+                    executeMove(y, x, y - 1, x);
                 }
                 if (checkValidMove(y, x, y, x + 1)) { // Right
-                    executeMove(y, x, y, x + 1)
+                    executeMove(y, x, y, x + 1);
                 }
             }
         }
@@ -223,7 +223,7 @@ function checkWhatBlocksToRemove() {
                 // in another piece's 2 above or 2 to the right
 
                 // Check if it can be matched with the 2 pieces above it
-                if (y - 2 > 0) {
+                if (y - 2 >= 0) {
                     if (puzzleBoard[y - 2][x] == puzzleBoard[y - 1][x] && puzzleBoard[y - 1][x] == puzzleBoard[y][x]) {
                         // Mark the pieces to be removed
                         blocksToRemove[y - 2][x] = 1;
@@ -290,7 +290,7 @@ function calculateGravity() {
     }
 
     // If any blocks moved, check if any more gravity is needed
-    if (didBlocksMove){
+    if (didBlocksMove) {
         calculateGravity();
     }
 }
