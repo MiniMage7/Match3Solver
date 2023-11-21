@@ -195,7 +195,52 @@ function recalculateBoard() {
 // Iterates over the whole puzzle board and returns what blocks need to be removed
 // Return: An 2d array of 0s and 1s where 1s represent the positions where blocks need to be removed
 function checkWhatBlocksToRemove() {
+    const blocksToRemove = [];
 
+    // Fill blockToRemove with 0s
+    // For each row in the grid
+    for (let y = 0; y < height; y++) {
+        // For each column in the grid
+        const tempRowOfTiles = [];
+        for (let x = 0; x < width; x++) {
+            tempRowOfTiles.push(0);
+        }
+        blocksToRemove.push(tempRowOfTiles);
+    }
+
+    // For each row in the grid
+    for (let y = 0; y < height; y++) {
+        // For each column in the grid
+        for (let x = 0; x < width; x++) {
+            // If the piece is a removable piece
+            if (puzzleBoard[y][x] > 0) {
+                // We only have to check for these 2 because all the other circumstances will be checked
+                // in another piece's 2 above or 2 to the right
+
+                // Check if it can be matched with the 2 pieces above it
+                if (y - 2 > 0) {
+                    if (puzzleBoard[y - 2][x] == puzzleBoard[y - 1][x] && puzzleBoard[y - 1][x] == puzzleBoard[y][x]) {
+                        // Mark the pieces to be removed
+                        blocksToRemove[y - 2][x] = 1;
+                        blocksToRemove[y - 1][x] = 1;
+                        blocksToRemove[y][x] = 1;
+                    }
+                }
+
+                // Check if it can be matched with the 2 pieces to the right of it
+                if (x + 2 < width) {
+                    if (puzzleBoard[y][x] == puzzleBoard[y][x + 1] && puzzleBoard[y][x + 1] == puzzleBoard[y][x + 2]) {
+                        // Mark the pieces to be removed
+                        blocksToRemove[y][x] = 1;
+                        blocksToRemove[y][x + 1] = 1;
+                        blocksToRemove[y][x + 2] = 1;
+                    }
+                }
+            }
+        }
+    }
+
+    return blocksToRemove;
 }
 
 // Takes an array of 1's and 0's
@@ -210,7 +255,7 @@ function removeGivenBlocks(blocksToRemove) {
 // Recursively calls itself until no blocks move
 // Blockers (-1s) do not fall
 function calculateGravity() {
-    
+
 }
 
 // Checks if any values in the array are greater than 0
