@@ -43,8 +43,39 @@ function setUpBoard() {
 function solve() {
     checkForWin();
 
+    // For each row in the grid
+    for (let y = 0; y < height; y++) {
+        // For each column in the grid
+        for (let x = 0; x < width; x++) {
+            // If the tile is movable
+            if (puzzleBoard[y][x] > 0) {
+                // Check if the piece can be moved up or right
+                // There is no need to check down or left as those would be
+                // another piece's up or right respectively
+                
+                if (checkValidMove(y, x, y - 1, x)) { // Up
+                    executeMove(y, x, y - 1, x)
+                }
+                if (checkValidMove(y, x, y, x + 1)) { // Right
+                    executeMove(y, x, y, x + 1)
+                }
+            }
+        }
+    }
+}
+
+// Checks if a move is a valid move
+// Input coordinates y1, x1 to be swapped with y2, x2
+function checkValidMove(y1, x1, y2, x2) {
 
 }
+
+// Executes a given move on the board
+// Input coordinates y1, x1 to be swapped with y2, x2
+function executeMove(y1, x1, y2, x2) {
+
+}
+
 
 // Checks if any values in the array are greater than 0
 // If there are none, the puzzle is solved and calls output solution
