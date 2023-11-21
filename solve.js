@@ -247,7 +247,17 @@ function checkWhatBlocksToRemove() {
 // Removes all blocks from the puzzle board where the given array has a 1 in the same position
 // Used with checkWhatBlocksToRemove()
 function removeGivenBlocks(blocksToRemove) {
-
+    // For each row in the grid
+    for (let y = 0; y < height; y++) {
+        // For each column in the grid
+        for (let x = 0; x < width; x++) {
+            // If the piece is marked to be removed
+            if (blocksToRemove[y][x] == 1) {
+                // Remove the piece
+                puzzleBoard[y][x] = 0;
+            }
+        }
+    }
 }
 
 // Makes all blocks that need to fall down in the puzzle board fall down
