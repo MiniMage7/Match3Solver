@@ -13,6 +13,8 @@ function startSolve() {
     outputBox.textContent = "solving";
     setUpBoard();
     solve();
+    // If this is reached, there was no solution found
+    outputBox.textContent = "There is no solution.";
 }
 
 // Sets the puzzleBoard and movesToSolve arrays up pre-solve
@@ -158,7 +160,9 @@ function executeMove(y1, x1, y2, x2) {
 
     // If this line was reached, the move was inccorect, so revert to the old board state
     puzzleBoard.length = 0;
-    puzzleBoard = JSON.parse(JSON.stringify(oldBoardState));
+    for (let index = 0; index < height; index++) {
+        puzzleBoard.push(oldBoardState[index]);
+    }
     // And remove the move from the move list
     movesToSolve.pop()
 }
@@ -311,5 +315,10 @@ function checkForWin() {
 }
 
 function outputSolution() {
-    outputBox.textContent = "solved?";
+    let outputString = "The solution is:\n\n";
+    for (let index = 0; index < movesToSolve.length; index++) {
+        outputString += `Swap: ${movesToSolve[index][0]} with ${movesToSolve[index][1]}\n`
+    }
+    outputString += "\nClick the question mark in the top right for help on how to read the solution."
+    outputBox.textContent = outputString;
 }
