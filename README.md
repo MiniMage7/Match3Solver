@@ -1,7 +1,7 @@
 # Match 3 Solver
 An algorithm that solves a finite match 3 game to completion.
 
-## To use the website version
+## To Use the Website Version
 
 The website version of the program can be used by opening the index.html file in a web browser.  
 The question mark button in the top right should explain anything else you need.  
