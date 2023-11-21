@@ -52,7 +52,7 @@ function solve() {
                 // Check if the piece can be moved up or right
                 // There is no need to check down or left as those would be
                 // another piece's up or right respectively
-                
+
                 if (checkValidMove(y, x, y - 1, x)) { // Up
                     executeMove(y, x, y - 1, x)
                 }
@@ -67,6 +67,35 @@ function solve() {
 // Checks if a move is a valid move
 // Input coordinates y1, x1 to be swapped with y2, x2
 function checkValidMove(y1, x1, y2, x2) {
+    // If the move is out of bounds
+    if (y2 < 0 || x2 >= width) {
+        return false;
+    }
+
+    // If the move is swapping with air or a blocker
+    if (puzzleBoard[y2][x2] < 1) {
+        return false;
+    }
+
+    // Swap the 2 spots on the puzzle board
+    let tempValue = puzzleBoard[y1][x1];
+    puzzleBoard[y1][x1] = puzzleBoard[y2][x2];
+    puzzleBoard[y2][x2] = tempValue;
+
+    // Check if the move results in any blocks being removed
+    let isMoveValid = (checkIfBlocksRemoved(y1, x1) || checkIfBlocksRemoved(y2, x2));
+
+    // Swap the pieces back
+    tempValue = puzzleBoard[y1][x1];
+    puzzleBoard[y1][x1] = puzzleBoard[y2][x2];
+    puzzleBoard[y2][x2] = tempValue;
+
+    return isMoveValid;
+}
+
+// Takes an x and y coordinate of the puzzle board
+// Checks if that piece should be removed
+function checkIfBlocksRemoved(y, x) {
 
 }
 
