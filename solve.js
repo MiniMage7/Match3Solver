@@ -166,7 +166,51 @@ function executeMove(y1, x1, y2, x2) {
 // Then rearranges the board to account for pieces falling
 // Recursively calls itself until no pieces move
 function recalculateBoard() {
+    // Get what blocks need to be removed
+    const blocksToRemove = checkWhatBlocksToRemove();
 
+    let isBlocksToRemove = false;
+    // For each row in the grid
+    for (let y = 0; y < height; y++) {
+        // For each column in the grid
+        for (let x = 0; x < width; x++) {
+            // If the tile is to be removed
+            if (blocksToRemove[y][x] == 1) {
+                isBlocksToRemove = true;
+            }
+        }
+    }
+
+    // If there are blocks to remove
+    if (isBlocksToRemove){
+        // Remove the blocks
+        removeGivenBlocks(blocksToRemove);
+        // Make all the blocks fall down
+        calculateGravity();
+        // Restart this process
+        recalculateBoard();
+    }
+}
+
+// Iterates over the whole puzzle board and returns what blocks need to be removed
+// Return: An 2d array of 0s and 1s where 1s represent the positions where blocks need to be removed
+function checkWhatBlocksToRemove() {
+
+}
+
+// Takes an array of 1's and 0's
+// Removes all blocks from the puzzle board where the given array has a 1 in the same position
+// Used with checkWhatBlocksToRemove()
+function removeGivenBlocks(blocksToRemove) {
+
+}
+
+// Makes all blocks that need to fall down in the puzzle board fall down
+// Moves all blocks with air under them down 1
+// Recursively calls itself until no blocks move
+// Blockers (-1s) do not fall
+function calculateGravity() {
+    
 }
 
 // Checks if any values in the array are greater than 0
