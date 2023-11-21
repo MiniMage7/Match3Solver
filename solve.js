@@ -10,6 +10,7 @@ const outputBox = document.getElementById("output");
 
 // Function called from the website button to start the solve process
 function startSolve() {
+    outputBox.textContent = "solving";
     setUpBoard();
     solve();
 }
@@ -265,7 +266,29 @@ function removeGivenBlocks(blocksToRemove) {
 // Recursively calls itself until no blocks move
 // Blockers (-1s) do not fall
 function calculateGravity() {
+    let didBlocksMove = false;
 
+    // For each row in the grid (bottom to top skipping bottom most row)
+    for (let y = height - 2; y >= 0; y--) {
+        // For each column in the grid
+        for (let x = 0; x < width; x++) {
+            // If the piece is effected by gravity
+            if (puzzleBoard[y][x] > 0) {
+                // If there is air below it
+                if (puzzleBoard[y + 1][x] == 0) {
+                    // Move it down to that block
+                    puzzleBoard[y + 1][x] = puzzleBoard[y][x];
+                    puzzleBoard[y][x] = 0;
+                    didBlocksMove = true;
+                }
+            }
+        }
+    }
+
+    // If any blocks moved, check if any more gravity is needed
+    if (didBlocksMove){
+        calculateGravity();
+    }
 }
 
 // Checks if any values in the array are greater than 0
@@ -288,5 +311,5 @@ function checkForWin() {
 }
 
 function outputSolution() {
-    //TODO:
+    outputBox.textContent = "solved?";
 }
