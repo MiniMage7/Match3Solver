@@ -101,11 +101,27 @@ function getCNumber(tile) {
   return tile.className.replace("tile", "").replace("c", "").trim();
 }
 
+// Get the coordinates of a tile in a graph
+function getCoordinates(tile) {
+  const parent = tile.parentNode;
+  const siblings = parent.childNodes;
+  for (index = 0; index < siblings.length; index++) {
+    if (tile.isSameNode(siblings[index])) {
+      index--;
+      let y =  Math.floor(index / height);
+      let x = index % height;
+      return `${y},${x}`;
+    }
+  }
+}
+
 // If the mouse is down on a tile enter, treat it as a click
+// Also update the coodinates in the coordinate display
 function mouseEnterTile(e) {
   if (isMouseDown) {
     cChange(e);
   }
+  coordinateDisplay.textContent = `Coordinates: ${getCoordinates(e.target)}`; //
 }
 
 // Keeps track of if the mouse is being pressed
