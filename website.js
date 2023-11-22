@@ -21,6 +21,10 @@ const helpArea = document.getElementById("helparea");
 document.getElementById("helpdiamond").addEventListener("click", showHelpArea);
 helpArea.addEventListener("click", hideHelpArea);
 
+// Coordinates checkbox and display
+document.getElementById("showCordToolTips").addEventListener("click", changeCoordinatesVisibility);
+const coordinateDisplay = document.getElementById("coordinatesbox");
+
 // Add clear button event
 document.getElementById("clear").addEventListener("click", clearGrid);
 
@@ -128,6 +132,7 @@ function clearGrid(e) {
   }
 }
 
+// Starts the match3 solve in solve.js
 function solveGrid(e) {
   startSolve();
 }
@@ -141,5 +146,14 @@ function showHelpArea(e) {
 function hideHelpArea(e) {
   if (e.target.id == "helparea") {
     helpArea.style.display = "none";
+  }
+}
+
+// Changes the visibility of coordinates in the top right
+function changeCoordinatesVisibility(e) {
+  if (e.target.checked) {
+    coordinateDisplay.style.visibility = "visible";
+  } else {
+    coordinateDisplay.style.visibility = "hidden";
   }
 }
