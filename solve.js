@@ -161,7 +161,7 @@ function checkIfBlocksRemoved(y, x) {
 // Input coordinates y1, x1 to be swapped with y2, x2
 function executeMove(y1, x1, y2, x2) {
     // Add the move to the move list
-    movesToSolve.push([`${y1},${x1} (${dict[puzzleBoard[y1][x1]]})`, `${y2},${x2} (${dict[puzzleBoard[y2][x2]]})`]);
+    movesToSolve.push([[y1, x1, dict[puzzleBoard[y1][x1]]], [y2, x2, dict[puzzleBoard[y2][x2]]]]);
     // Save the current board state
     const oldBoardState = JSON.parse(JSON.stringify(puzzleBoard));
     // Add that board state to the saved boards
@@ -342,7 +342,7 @@ function checkForWin() {
 function outputSolution() {
     let outputString = "The solution is:\n\n";
     for (let index = 0; index < movesToSolve.length; index++) {
-        outputString += `Swap: ${movesToSolve[index][0]} with ${movesToSolve[index][1]}\n`;
+        outputString += `Swap: ${movesToSolve[index][0][0]},${movesToSolve[index][0][1]} (${movesToSolve[index][0][2]}) with ${movesToSolve[index][1][0]},${movesToSolve[index][1][1]} (${movesToSolve[index][0][2]})\n`;
     }
     outputString += "\nClick the question mark in the top right for help on how to read the solution.";
     outputBox.textContent = outputString;

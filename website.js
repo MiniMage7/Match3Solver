@@ -210,11 +210,17 @@ function enableSolveMode() {
   // Enable the next button and disable the previous one
   previousButton.disabled = "disabled";
   nextButton.removeAttribute("disabled");
+
+  // Update board state to highlight next move
+  updateBoardState();
 }
 
 // Disables solve modes and buttons that interact with it
 function disableSolveMode() {
   inSolveMode = false;
+
+  // Remove move highlight
+  highlightMove("solid");
 
   // Enable the ability to change the grid size
   widthBox.removeAttribute("disabled");
@@ -231,6 +237,9 @@ function nextBoardState() {
   if (currentStep + 1 >= storedBoards.length) {
     return;
   }
+
+  // Disable currently highlighted move
+  highlightMove("solid");
 
   // Increment current step
   currentStep++;
@@ -253,6 +262,9 @@ function previousBoardState() {
     return;
   }
 
+  // Disable currently highlighted move
+  highlightMove("solid");
+
   // Decrement current step
   currentStep--;
 
@@ -269,7 +281,7 @@ function previousBoardState() {
 
 // Updates to the next requested step of the solution
 function updateBoardState() {
-  let tiles = tileContainer.getElementsByClassName("tile");
+  const tiles = tileContainer.getElementsByClassName("tile");
 
   // For each tile
   for (let index = 0; index < tiles.length; index++) {
@@ -279,5 +291,20 @@ function updateBoardState() {
     // Replace its c class with the c Number from the stored board state
     let newCNumber = storedBoards[currentStep][Math.floor(index / width)][index % width];
     tile.classList.replace("c" + cNumber, "c" + newCNumber);
+  }
+
+  highlightMove("dotted");
+}
+
+// Changes the currently selected move to the passed highlight
+// Dotted to enable, solid to disable highlighted move
+function highlightMove(style) {
+  const tiles = tileContainer.getElementsByClassName("tile");
+
+  // If it isnt the last board state, show the next move to make
+  if (movesToSolve.length > currentStep) {
+    let nextMove = movesToSolve[currentStep];
+    tiles[Number(nextMove[0][0]) * width + Number(nextMove[0][1])].style.borderStyle = style;
+    tiles[Number(nextMove[1][0]) * width + Number(nextMove[1][1])].style.borderStyle = style;
   }
 }
