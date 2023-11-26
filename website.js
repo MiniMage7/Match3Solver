@@ -76,7 +76,7 @@ function updateGridSize() {
 // Changed the class up or down 1 on user click
 function cChange(e) {
   let cNumber = Number(getCNumber(e.target));
-  let newCNumber = cNumber;
+  let newCNumber;
 
   // If shift is being held go down
   if (e.shiftKey) {

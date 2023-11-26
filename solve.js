@@ -4,6 +4,7 @@
 // Arrays used for solving
 const puzzleBoard = [];
 const movesToSolve = [];
+const storedBoards = [];
 
 // Where output is written out to
 const outputBox = document.getElementById("output");
@@ -161,6 +162,8 @@ function executeMove(y1, x1, y2, x2) {
     movesToSolve.push([`${y1},${x1} (${dict[puzzleBoard[y1][x1]]})`, `${y2},${x2} (${dict[puzzleBoard[y2][x2]]})`]);
     // Save the current board state
     const oldBoardState = JSON.parse(JSON.stringify(puzzleBoard));
+    // Add that board state to the saved boards
+    storedBoards.push(oldBoardState);
 
     // Execute the move and recalculate the new puzzle board
     let tempValue = puzzleBoard[y1][x1];
@@ -177,7 +180,8 @@ function executeMove(y1, x1, y2, x2) {
         puzzleBoard.push(oldBoardState[index]);
     }
     // And remove the move from the move list
-    movesToSolve.pop()
+    movesToSolve.pop();
+    storedBoards.pop();
 }
 
 // Check if there are any pieces that need to be removed and removes them
@@ -330,8 +334,8 @@ function checkForWin() {
 function outputSolution() {
     let outputString = "The solution is:\n\n";
     for (let index = 0; index < movesToSolve.length; index++) {
-        outputString += `Swap: ${movesToSolve[index][0]} with ${movesToSolve[index][1]}\n`
+        outputString += `Swap: ${movesToSolve[index][0]} with ${movesToSolve[index][1]}\n`;
     }
-    outputString += "\nClick the question mark in the top right for help on how to read the solution."
+    outputString += "\nClick the question mark in the top right for help on how to read the solution.";
     outputBox.textContent = outputString;
 }
