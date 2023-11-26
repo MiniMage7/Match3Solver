@@ -37,6 +37,8 @@ function setUpBoard() {
     puzzleBoard.length = 0;
     // Empty the solution moves if it isn't already
     movesToSolve.length = 0;
+    // Empty the stored board states if they aren't already
+    storedBoards.length = 0;
 
     // Get all the tiles
     let tiles = tileContainer.getElementsByClassName("tile");
@@ -328,6 +330,7 @@ function checkForWin() {
 
     // If this line is reached, the puzzle is solved
     outputSolution();
+    enableSolveMode();
     throw new Error("This is not an error. This is just to stop the solving process on success.");
 }
 

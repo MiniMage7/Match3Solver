@@ -30,6 +30,9 @@ document.getElementById("clear").addEventListener("click", clearGrid);
 // Add solve puzzle event
 document.getElementById("solve").addEventListener("click", solveGrid);
 
+// To handle if the website is stepping through the solution instead of drawing
+let inSolveMode = false;
+
 // When the grid size boxes are update, adds or removes tiles as needed
 function updateGridSize() {
   let oldWidth = width;
@@ -75,6 +78,11 @@ function updateGridSize() {
 
 // Changed the class up or down 1 on user click
 function cChange(e) {
+  // If the website is in solve mode, don't allow drawing
+  if (inSolveMode) {
+    return;
+  }
+
   let cNumber = Number(getCNumber(e.target));
   let newCNumber;
 
@@ -135,6 +143,9 @@ function mouseUp(e) {
 
 // Makes all the tiles white (c0)
 function clearGrid(e) {
+  // If the website is in solve mode, disable it
+  disableSolveMode();
+
   let tiles = tileContainer.getElementsByClassName("tile");
 
   // For each tile
@@ -147,9 +158,15 @@ function clearGrid(e) {
   }
 }
 
-// Starts the match3 solve in solve.js
+// If the website is in solve mode, disable it
+// Otherwise, starts the match3 solve in solve.js
 function solveGrid(e) {
-  startSolve();
+  if (inSolveMode) {
+    disableSolveMode();
+  }
+  else {
+    startSolve();
+  }
 }
 
 // Shows the help rules
@@ -162,4 +179,22 @@ function hideHelpArea(e) {
   if (e.target.id == "helparea") {
     helpArea.style.display = "none";
   }
+}
+
+// Enables solve mode and buttons that interact with it
+function enableSolveMode() {
+  inSolveMode = true;
+
+  // Disable the ability to change the grid size
+  widthBox.disabled = "disabled";
+  heightBox.disabled = "disabled";
+}
+
+// Disables solve modes and buttons that interact with it
+function disableSolveMode() {
+  inSolveMode = false;
+
+  // Enable the ability to change the grid size
+  widthBox.removeAttribute("disabled");
+  heightBox.removeAttribute("disabled");
 }
