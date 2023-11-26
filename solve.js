@@ -330,6 +330,8 @@ function checkForWin() {
 
     // If this line is reached, the puzzle is solved
     outputSolution();
+    // Add the empty board state to the stored boards
+    storedBoards.push(JSON.parse(JSON.stringify(puzzleBoard)));
     // If the board is empty, don't enable solve mode
     if (movesToSolve.length != 0) {
         enableSolveMode();

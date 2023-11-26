@@ -36,7 +36,11 @@ let currentStep = 0;
 
 // Next and pervious buttons for solve mode
 const previousButton = document.getElementById("previous");
+previousButton.addEventListener("click", previousBoardState);
+
 const nextButton = document.getElementById("next");
+nextButton.addEventListener("click", nextBoardState);
+
 
 // When the grid size boxes are update, adds or removes tiles as needed
 function updateGridSize() {
@@ -206,11 +210,6 @@ function enableSolveMode() {
   // Enable the next button and disable the previous one
   previousButton.disabled = "disabled";
   nextButton.removeAttribute("disabled");
-
-  // If the solution is only 1 step, disable the next button too
-  if (movesToSolve.length == 1) {
-    nextButton.disabled = "disabled";
-  }
 }
 
 // Disables solve modes and buttons that interact with it
@@ -229,7 +228,7 @@ function disableSolveMode() {
 // Handles moving to the next step in the solution
 function nextBoardState() {
   // If there isn't a next step, return
-  if (currentStep + 1 >= movesToSolve.length) {
+  if (currentStep + 1 >= storedBoards.length) {
     return;
   }
 
@@ -239,7 +238,7 @@ function nextBoardState() {
   // Enable the previous button (in case its disabled)
   previousButton.removeAttribute("disabled");
   // Check to see if the next button should be disabled
-  if (currentStep + 1 >= movesToSolve.length) {
+  if (currentStep + 1 >= storedBoards.length) {
     nextButton.disabled = "disabled";
   }
 
@@ -250,7 +249,7 @@ function nextBoardState() {
 // Handles moving to the previous step in the solution
 function previousBoardState() {
   // If there isn't a previous step, return
-  if (currentStep - 1 <= 0) {
+  if (currentStep - 1 < 0) {
     return;
   }
 
@@ -260,7 +259,7 @@ function previousBoardState() {
   // Enable the next button (in case its disabled)
   nextButton.removeAttribute("disabled");
   // Check to see if the previous button should be disabled
-  if (currentStep - 1 <= 0) {
+  if (currentStep - 1 < 0) {
     previousButton.disabled = "disabled";
   }
 
@@ -270,5 +269,15 @@ function previousBoardState() {
 
 // Updates to the next requested step of the solution
 function updateBoardState() {
-  // TODO: 
+  let tiles = tileContainer.getElementsByClassName("tile");
+
+  // For each tile
+  for (let index = 0; index < tiles.length; index++) {
+    const tile = tiles[index];
+    // Get the tiles c number
+    let cNumber = Number(getCNumber(tile));
+    // Replace its c class with the c Number from the stored board state
+    let newCNumber = storedBoards[currentStep][Math.floor(index / width)][index % width];
+    tile.classList.replace("c" + cNumber, "c" + newCNumber);
+  }
 }
