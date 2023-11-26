@@ -32,6 +32,11 @@ document.getElementById("solve").addEventListener("click", solveGrid);
 
 // To handle if the website is stepping through the solution instead of drawing
 let inSolveMode = false;
+let currentStep;
+
+// Next and pervious buttons for solve mode
+const previousButton = document.getElementById("previous");
+const nextButton = document.getElementById("next");
 
 // When the grid size boxes are update, adds or removes tiles as needed
 function updateGridSize() {
@@ -144,7 +149,9 @@ function mouseUp(e) {
 // Makes all the tiles white (c0)
 function clearGrid(e) {
   // If the website is in solve mode, disable it
-  disableSolveMode();
+  if (inSolveMode) {
+    disableSolveMode();
+  }
 
   let tiles = tileContainer.getElementsByClassName("tile");
 
@@ -185,9 +192,16 @@ function hideHelpArea(e) {
 function enableSolveMode() {
   inSolveMode = true;
 
+  // Reset the current spot in the step through
+  currentStep = 0;
+
   // Disable the ability to change the grid size
   widthBox.disabled = "disabled";
   heightBox.disabled = "disabled";
+
+  // Make the next and previous buttons visible
+  previousButton.style.visibility = "visible";
+  nextButton.style.visibility = "visible";
 }
 
 // Disables solve modes and buttons that interact with it
@@ -197,4 +211,8 @@ function disableSolveMode() {
   // Enable the ability to change the grid size
   widthBox.removeAttribute("disabled");
   heightBox.removeAttribute("disabled");
+
+  // Make the next and previous buttons hidden
+  previousButton.style.visibility = "hidden";
+  nextButton.style.visibility = "hidden";
 }
