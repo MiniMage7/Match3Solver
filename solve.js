@@ -330,7 +330,10 @@ function checkForWin() {
 
     // If this line is reached, the puzzle is solved
     outputSolution();
-    enableSolveMode();
+    // If the board is empty, don't enable solve mode
+    if (movesToSolve.length != 0) {
+        enableSolveMode();
+    }
     throw new Error("This is not an error. This is just to stop the solving process on success.");
 }
 

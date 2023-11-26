@@ -32,7 +32,7 @@ document.getElementById("solve").addEventListener("click", solveGrid);
 
 // To handle if the website is stepping through the solution instead of drawing
 let inSolveMode = false;
-let currentStep;
+let currentStep = 0;
 
 // Next and pervious buttons for solve mode
 const previousButton = document.getElementById("previous");
@@ -202,6 +202,15 @@ function enableSolveMode() {
   // Make the next and previous buttons visible
   previousButton.style.visibility = "visible";
   nextButton.style.visibility = "visible";
+
+  // Enable the next button and disable the previous one
+  previousButton.disabled = "disabled";
+  nextButton.removeAttribute("disabled");
+
+  // If the solution is only 1 step, disable the next button too
+  if (movesToSolve.length == 1) {
+    nextButton.disabled = "disabled";
+  }
 }
 
 // Disables solve modes and buttons that interact with it
@@ -215,4 +224,51 @@ function disableSolveMode() {
   // Make the next and previous buttons hidden
   previousButton.style.visibility = "hidden";
   nextButton.style.visibility = "hidden";
+}
+
+// Handles moving to the next step in the solution
+function nextBoardState() {
+  // If there isn't a next step, return
+  if (currentStep + 1 >= movesToSolve.length) {
+    return;
+  }
+
+  // Increment current step
+  currentStep++;
+
+  // Enable the previous button (in case its disabled)
+  previousButton.removeAttribute("disabled");
+  // Check to see if the next button should be disabled
+  if (currentStep + 1 >= movesToSolve.length) {
+    nextButton.disabled = "disabled";
+  }
+
+  // Update to the next board state
+  updateBoardState();
+}
+
+// Handles moving to the previous step in the solution
+function previousBoardState() {
+  // If there isn't a previous step, return
+  if (currentStep - 1 <= 0) {
+    return;
+  }
+
+  // Decrement current step
+  currentStep--;
+
+  // Enable the next button (in case its disabled)
+  nextButton.removeAttribute("disabled");
+  // Check to see if the previous button should be disabled
+  if (currentStep - 1 <= 0) {
+    previousButton.disabled = "disabled";
+  }
+
+  // Update to the next board state
+  updateBoardState();
+}
+
+// Updates to the next requested step of the solution
+function updateBoardState() {
+  // TODO: 
 }
