@@ -48,7 +48,7 @@ function updateGridSize() {
   let oldHeight = height;
 
   // Make sure the changed values are in acceptable ranges
-  const maxSize = 15;
+  const maxSize = 32;
   if (widthBox.value > maxSize) {
     widthBox.value = maxSize;
   } else if (widthBox.value < 1) {
