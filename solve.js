@@ -21,11 +21,21 @@ dict[10] = "Brown";
 
 // Function called from the website button to start the solve process
 function startSolve() {
-    // TODO: Something to show its working if it takes long (idk if it will but probably should do something anyways)
+    // Change the cursor to show there is something happening
+    document.body.style.cursor = "progress";
+    // Also disable the solve button
+    solveButton.disabled = "disabled";
+
     setUpBoard();
     solve();
+
     // If this is reached, there was no solution found
-    // TODO:
+
+    // Undo the cursor change
+    document.body.style.cursor = "default";
+    // Change the solve button to say no solution
+    solveButton.textContent = "Impossible";
+    noSolution = true;
 }
 
 // Sets the puzzleBoard and movesToSolve arrays up pre-solve
@@ -333,6 +343,11 @@ function checkForWin() {
     if (movesToSolve.length != 0) {
         enableSolveMode();
     }
-    
+
+    // Remove the cursor change
+    document.body.style.cursor = "default";
+    // Enable the solve button again
+    solveButton.removeAttribute("disabled");
+
     throw new Error("This is not an error. This is just to stop the solving process on success.");
 }

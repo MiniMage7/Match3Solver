@@ -25,7 +25,8 @@ helpArea.addEventListener("click", hideHelpArea);
 document.getElementById("clear").addEventListener("click", clearGrid);
 
 // Add solve puzzle event
-document.getElementById("solve").addEventListener("click", solveGrid);
+const solveButton = document.getElementById("solve");
+solveButton.addEventListener("click", solveGrid);
 
 // To handle if the website is stepping through the solution instead of drawing
 let inSolveMode = false;
@@ -38,6 +39,8 @@ previousButton.addEventListener("click", previousBoardState);
 const nextButton = document.getElementById("next");
 nextButton.addEventListener("click", nextBoardState);
 
+// Track if the solve button is disabled due to lack of solution
+let noSolution = false;
 
 // When the grid size boxes are update, adds or removes tiles as needed
 function updateGridSize() {
@@ -87,6 +90,13 @@ function cChange(e) {
   // If the website is in solve mode, don't allow drawing
   if (inSolveMode) {
     return;
+  }
+
+  // If the solve button is disabled, allow it to be pushed again
+  if (noSolution) {
+    noSolution = true;
+    solveButton.textContent = "Solve";
+    solveButton.removeAttribute("disabled");
   }
 
   let cNumber = Number(getCNumber(e.target));
