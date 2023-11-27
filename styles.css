@@ -187,3 +187,8 @@ button {
   padding-left: 100px;
   margin-top: 80px;
 }
+
+/* Make links always blue */
+a {
+  color: blue;
+}
