@@ -34,6 +34,16 @@ body {
   margin-bottom: 20px;
 }
 
+#colorselector {
+  display: inline-grid;
+}
+
+#colorselector .selected {
+  width: 32px;
+  height: 32px;
+  margin: 4px;
+}
+
 /* Make text areas not resizeable and have same margin as grid */
 textarea {
   resize: none;
