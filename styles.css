@@ -39,9 +39,7 @@ body {
 }
 
 #colorselector .selected {
-  width: 32px;
-  height: 32px;
-  margin: 4px;
+  border-radius: 12px;
 }
 
 /* Make text areas not resizeable and have same margin as grid */

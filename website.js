@@ -47,6 +47,10 @@ nextButton.addEventListener("click", nextBoardState);
 // Track if the solve button is disabled due to lack of solution
 let noSolution = false;
 
+// Set color selector size
+colorSelector.style.gridTemplateColumns = "repeat(6, auto)";
+colorSelector.style.gridTemplateRows = "repeat(2, auto)";
+
 // When the grid size boxes are update, adds or removes tiles as needed
 function updateGridSize() {
   let oldWidth = width;
@@ -71,10 +75,6 @@ function updateGridSize() {
   // Resize grid
   tileContainer.style.gridTemplateColumns = "repeat(" + String(width) + ", auto)";
   tileContainer.style.gridTemplateRows = "repeat(" + String(height) + ", auto)";
-
-  // Resize color selector
-  colorSelector.style.gridTemplateColumns = "repeat(" + String(width) + ", auto)";
-  colorSelector.style.gridTemplateRows = "repeat(" + String(Math.ceil(12 / width)) + ", auto)";
 
   // Add tiles
   if (width * height > oldWidth * oldHeight) {
