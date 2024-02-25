@@ -151,8 +151,31 @@ fn check_for_win() {
 }
 
 
-// Check if the puzzle has an early loss
-fn check_for_loss() -> bool {
-    // TODO:
+// Checks one of the ways the puzzle could be impossible early
+// Checks to make sure there isn't exactly 1 or 2 of a color
+fn check_for_loss(game_board: &GameBoard) -> bool {
+    // Array for colors 1-10
+    // (There is a spot for 0 even though it is unused to cut down on needed operations)
+    let color_counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+    // For each row in the grid
+    for y in (0..game_board.height) {
+        // For each column in the grid
+        for x in (0..game_board.width) {
+            // If it is a removable piece
+            if (game_board.board[y][x] > 0) {
+                // If there is air below it
+                color_counter[game_board.board[y][x]] += 1;
+            }
+        }
+    }
+
+    // Make sure none are 1 or 2
+    for i in (1..11) {
+        if color_counter[i] == 1 || color_counter[i] == 2 {
+            return true;
+        }
+    }
+
     false
 }
