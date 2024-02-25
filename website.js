@@ -363,7 +363,7 @@ function highlightMove(radius) {
 
 // Copies the board as a json onto the clipboard
 async function exportBoard() {
-  let outputJSONString = "{ \"height\": " + height + ", \"width\": " + width + ", \"board\": ";
+  let outputJSONString = "{\n  \"height\": " + height + ",\n  \"width\": " + width + ",\n  \"board\": ";
   
   // Get all the tiles
   let tiles = tileContainer.getElementsByClassName("tile");
@@ -372,19 +372,22 @@ async function exportBoard() {
   let boardString = "["
   for (let y = 0; y < height; y++) {
     // For each column in the grid
-    boardString += " [ ";
+    boardString += "[";
     for (let x = 0; x < width; x++) {
       // Add that tile's c value to the row of tiles
       const tile = tiles[y * width + x];
       let cNumber = Number(getCNumber(tile));
-      boardString += cNumber += ", ";
+      boardString += cNumber += ",";
     }
-    boardString = boardString.substring(0, boardString.length - 2) + " ],";
+    boardString = boardString.substring(0, boardString.length - 1) + "], ";
   }
-  boardString = boardString.substring(0, boardString.length - 1) + " ]";
-  outputJSONString += boardString + " }";
+  boardString = boardString.substring(0, boardString.length - 2) + "]";
+  outputJSONString += boardString + "\n}";
 
+  // Copy the string to the clipboard
   await navigator.clipboard.writeText(outputJSONString);
+
+  // Change the export button for a few seconds to show it copied
   exportButton.textContent = "Copied";
   exportButton.disabled = "disabled";
   await sleep(3000)
