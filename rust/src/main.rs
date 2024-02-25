@@ -37,7 +37,7 @@ fn main() {
 // Those threads will do all the logic for the move and then start from this function again
 fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
     check_for_win();
-    if check_for_loss() {panic!("The puzzle is in an unsolvable state")};
+    if check_for_loss(&game_board) {panic!("The puzzle is in an unsolvable state")};
 
     // For each row in the grid
     for y in 0..game_board.height {
@@ -156,22 +156,22 @@ fn check_for_win() {
 fn check_for_loss(game_board: &GameBoard) -> bool {
     // Array for colors 1-10
     // (There is a spot for 0 even though it is unused to cut down on needed operations)
-    let color_counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let mut color_counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
     // For each row in the grid
-    for y in (0..game_board.height) {
+    for y in 0..game_board.height {
         // For each column in the grid
-        for x in (0..game_board.width) {
+        for x in 0..game_board.width {
             // If it is a removable piece
-            if (game_board.board[y][x] > 0) {
+            if game_board.board[y][x] > 0 {
                 // If there is air below it
-                color_counter[game_board.board[y][x]] += 1;
+                color_counter[game_board.board[y][x] as usize] += 1;
             }
         }
     }
 
     // Make sure none are 1 or 2
-    for i in (1..11) {
+    for i in 1..11 {
         if color_counter[i] == 1 || color_counter[i] == 2 {
             return true;
         }
