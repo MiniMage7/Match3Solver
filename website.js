@@ -46,6 +46,7 @@ nextButton.addEventListener("click", nextBoardState);
 
 // Export and import buttons
 const importButton = document.getElementById("import");
+importButton.addEventListener("click", importBoard);
 
 const exportButton = document.getElementById("export");
 exportButton.addEventListener("click", exportBoard);
@@ -395,6 +396,54 @@ async function exportBoard() {
   exportButton.removeAttribute("disabled");
 }
 
+// Imports a json (string) from the clipboard and onto the board
+async function importBoard() {
+  // Read JSON from clipboard
+  let importJSONString;
+  try {
+    importJSONString = await navigator.clipboard.readText();
+  } catch (error) {
+    // I feel like there is something I'm missing because Firefox's documentation makes it look like I can do this
+    // but I can't figure it out. Would appreciate help.
+    alert("This broswer doesn't support copying from the clipboard.\nChrome and Edge are confirmed to work.");
+  }
+  
+  let importedBoard;
+
+  // Try to extract the data from the clipboard text
+  try {
+    importedJSON = JSON.parse(importJSONString);
+
+    heightBox.value = importedJSON.height;
+    widthBox.value = importedJSON.width;
+
+    importedBoard = importedJSON.board;
+  } catch {
+    importButton.textContent = "Invalid";
+    importButton.style.disabled = "disabled";
+    await sleep(3000);
+    importButton.textContent = "Import";
+    importButton.removeAttribute("disabled");
+    return;
+  }
+  
+  // Resize the grid
+  updateGridSize();
+
+  // Update all the tiles in the board
+  const tiles = tileContainer.getElementsByClassName("tile");
+
+  for (let index = 0; index < tiles.length; index++) {
+    const tile = tiles[index];
+    // Get the tiles c number
+    let cNumber = Number(getCNumber(tile));
+    // Replace its c class with the c Number from the stored board state
+    let newCNumber = importedBoard[Math.floor(index / width)][index % width];
+    tile.classList.replace("c" + cNumber, "c" + newCNumber);
+  }
+}
+
+// Sleeps for passed ms
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
