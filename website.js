@@ -104,7 +104,7 @@ function cChange(e) {
 
   // If the solve button is disabled, allow it to be pushed again
   if (noSolution) {
-    noSolution = true;
+    noSolution = false;
     solveButton.textContent = "Solve";
     solveButton.removeAttribute("disabled");
   }
