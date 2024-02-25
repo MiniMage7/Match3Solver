@@ -48,11 +48,11 @@ fn solve(mut game_board: GameBoard) {
                 // another piece's up or left respectively
 
                 // Swap Up
-                if check_if_valid_move(&mut game_board.board, Swap{y1:y, x1:x, y2:y - 1, x2:x}) {
+                if check_if_valid_move(&mut game_board, Swap{y1:y, x1:x, y2:y - 1, x2:x}) {
                     // TODO:
                 }
                 // Swap Left
-                if check_if_valid_move(&game_board.board, Swap{y1:y, x1:x, y2:y, x2:x - 1}) {
+                if check_if_valid_move(&mut game_board, Swap{y1:y, x1:x, y2:y, x2:x - 1}) {
                     // TODO:
                 }
             }
@@ -61,29 +61,29 @@ fn solve(mut game_board: GameBoard) {
 }
 
 
-fn check_if_valid_move(board : &Vec<Vec<u8>>, swap: Swap) -> bool {
+fn check_if_valid_move(game_board: &GameBoard, swap: Swap) -> bool {
     // If the swap goes out of bounds
     if swap.y2 < 0 || swap.x2 < 0 {
         return false;
     }
 
     // If the move is swapping with air or a blocker
-    if (board[swap.y2][swap.x2] < 1) {
+    if (game_board.board[swap.y2][swap.x2] < 1) {
         return false;
     }
 
     // Swap the 2 spots on the puzzle board
-    let temp_value = board[swap.y1][swap.x1];
-    board[swap.y1][swap.x1] = board[swap.y2][swap.x2];
-    board[swap.y2][swap.x2] = temp_value;
+    let temp_value = game_board.board[swap.y1][swap.x1];
+    game_board.board[swap.y1][swap.x1] = game_board.board[swap.y2][swap.x2];
+    game_board.board[swap.y2][swap.x2] = temp_value;
 
-    let is_move_valid = check_if_blocks_removed(board, (swap.y1, swap.x1)) ||
-                                check_if_blocks_removed(board, (swap.y2, swap.x2));
+    let is_move_valid = check_if_blocks_removed(&game_board, swap.y1, swap.x1) ||
+                                check_if_blocks_removed(&game_board, swap.y2, swap.x2);
 
     // Swap the pieces back
-    let temp_value = board[swap.y1][swap.x1];
-    board[swap.y1][swap.x1] = board[swap.y2][swap.x2];
-    board[swap.y2][swap.x2] = temp_value;
+    let temp_value = game_board.board[swap.y1][swap.x1];
+    game_board.board[swap.y1][swap.x1] = game_board.board[swap.y2][swap.x2];
+    game_board.board[swap.y2][swap.x2] = temp_value;
 
     is_move_valid
 }
@@ -91,8 +91,53 @@ fn check_if_valid_move(board : &Vec<Vec<u8>>, swap: Swap) -> bool {
 
 // Takes an x and y coordinate of the puzzle board
 // Checks if that piece should be removed
-fn check_if_blocks_removed(board : &Vec<Vec<u8>>, tile_location: (u8, u8)) -> bool {
-    true
+fn check_if_blocks_removed(game_board: &GameBoard, y : u8, x : u8) -> bool {
+    // If it matches with the 2 blocks above it
+    if (y - 2 >= 0) {
+        if (game_board.board[y - 2][x] == game_board.board[y - 1][x] &&
+            game_board.board[y - 1][x] == game_board.board[y][x]) {
+            return true;
+        }
+    }
+    // If it matches with 1 block above it and 1 below it
+    if (y - 1 >= 0 && y + 1 < game_board.height) {
+        if (game_board.board[y - 1][x] == game_board.board[y][x] &&
+            game_board.board[y][x] == game_board.board[y + 1][x]) {
+            return true;
+        }
+    }
+    // If it matches with the 2 blocks below it
+    if (y + 2 < game_board.height) {
+        if (game_board.board[y][x] == game_board.board[y + 1][x] &&
+            game_board.board[y + 1][x] == game_board.board[y + 2][x]) {
+            return true;
+        }
+    }
+
+    // If it matches with the 2 blocks to the left of it
+    if (x - 2 >= 0) {
+        if (game_board.board[y][x - 2] == game_board.board[y][x - 1] &&
+            game_board.board[y][x - 1] == game_board.board[y][x]) {
+            return true;
+        }
+    }
+    // If it matches with the block to the left and to the right of it
+    if (x - 1 >= 0 && x + 1 < game_board.width) {
+        if (game_board.board[y][x - 1] == game_board.board[y][x] &&
+            game_board.board[y][x] == game_board.board[y][x + 1]) {
+            return true;
+        }
+    }
+    // If it matches with the 2 blocks to the right of it
+    if (x + 2 < game_board.width) {
+        if (game_board.board[y][x] == game_board.board[y][x + 1] &&
+            game_board.board[y][x + 1] == game_board.board[y][x + 2]) {
+            return true;
+        }
+    }
+
+    // If none of the moves resulted in blocks being removed
+    false
 }
 
 
