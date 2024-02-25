@@ -4,16 +4,16 @@ use std::io;
 
 #[derive(Deserialize, Debug)]
 struct GameBoard {
-    height: u8,
-    width: u8,
-    board: Vec<Vec<u8>>,
+    height: usize,
+    width: usize,
+    board: Vec<Vec<isize>>,
 }
 
 struct Swap {
-    y1: u8,
-    x1: u8,
-    y2: u8,
-    x2: u8,
+    y1: usize,
+    x1: usize,
+    y2: usize,
+    x2: usize,
 }
 
 
@@ -25,50 +25,54 @@ fn main() {
         .expect("Failed to read line.");
 
     // Format the input into a GameBoard struct
-    let mut game_board: GameBoard = serde_json::from_str(&game_board).unwrap();
+    let game_board: GameBoard = serde_json::from_str(&game_board).unwrap();
 
+    let moves_to_solve : Vec<Swap> = Vec::new();
 
+    solve(game_board, moves_to_solve);
 }
 
 
 // Checks if the board has any valid moves and spawns a new thread to do any found moves
 // Those threads will do all the logic for the move and then start from this function again
-fn solve(mut game_board: GameBoard) {
+fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
     check_for_win();
-    if check_for_loss() {return};
+    if check_for_loss() {panic!("The puzzle is in an unsolvable state")};
 
     // For each row in the grid
-    for y in (0..game_board.height){
+    for y in 0..game_board.height {
         // For each column in the grid
-        for x in (0..game_board.width){
+        for x in 0..game_board.width {
             // If the tile is movable
-            if (game_board.board[y][x] > 0) {
-                // Check if the piece can be moved up or left
-                // There is no need to check down or right as those would be
-                // another piece's up or left respectively
+            if game_board.board[y][x] > 0 {
+                // Check if the piece can be moved down or right
+                // There is no need to check up or left as those would be
+                // another piece's down or right respectively
 
-                // Swap Up
-                if check_if_valid_move(&mut game_board, Swap{y1:y, x1:x, y2:y - 1, x2:x}) {
+                // Swap Down
+                if check_if_valid_move(&mut game_board, Swap{y1:y, x1:x, y2:y + 1, x2:x}) {
                     // TODO:
                 }
-                // Swap Left
-                if check_if_valid_move(&mut game_board, Swap{y1:y, x1:x, y2:y, x2:x - 1}) {
+                // Swap Right
+                if check_if_valid_move(&mut game_board, Swap{y1:y, x1:x, y2:y, x2:x + 1}) {
                     // TODO:
                 }
             }
         }
     }
+
+    return moves_to_solve;
 }
 
 
-fn check_if_valid_move(game_board: &GameBoard, swap: Swap) -> bool {
+fn check_if_valid_move(game_board: &mut GameBoard, swap: Swap) -> bool {
     // If the swap goes out of bounds
-    if swap.y2 < 0 || swap.x2 < 0 {
+    if swap.y2 >= game_board.height || swap.x2 >= game_board.width {
         return false;
     }
 
     // If the move is swapping with air or a blocker
-    if (game_board.board[swap.y2][swap.x2] < 1) {
+    if game_board.board[swap.y2][swap.x2] < 1 {
         return false;
     }
 
@@ -91,47 +95,47 @@ fn check_if_valid_move(game_board: &GameBoard, swap: Swap) -> bool {
 
 // Takes an x and y coordinate of the puzzle board
 // Checks if that piece should be removed
-fn check_if_blocks_removed(game_board: &GameBoard, y : u8, x : u8) -> bool {
+fn check_if_blocks_removed(game_board: &GameBoard, y : usize, x : usize) -> bool {
     // If it matches with the 2 blocks above it
-    if (y - 2 >= 0) {
-        if (game_board.board[y - 2][x] == game_board.board[y - 1][x] &&
-            game_board.board[y - 1][x] == game_board.board[y][x]) {
+    if y as isize - 2 >= 0 {
+        if game_board.board[y - 2][x] == game_board.board[y - 1][x] &&
+            game_board.board[y - 1][x] == game_board.board[y][x] {
             return true;
         }
     }
     // If it matches with 1 block above it and 1 below it
-    if (y - 1 >= 0 && y + 1 < game_board.height) {
-        if (game_board.board[y - 1][x] == game_board.board[y][x] &&
-            game_board.board[y][x] == game_board.board[y + 1][x]) {
+    if y as isize - 1 >= 0 && y + 1 < game_board.height {
+        if game_board.board[y - 1][x] == game_board.board[y][x] &&
+            game_board.board[y][x] == game_board.board[y + 1][x] {
             return true;
         }
     }
     // If it matches with the 2 blocks below it
-    if (y + 2 < game_board.height) {
-        if (game_board.board[y][x] == game_board.board[y + 1][x] &&
-            game_board.board[y + 1][x] == game_board.board[y + 2][x]) {
+    if y + 2 < game_board.height {
+        if game_board.board[y][x] == game_board.board[y + 1][x] &&
+            game_board.board[y + 1][x] == game_board.board[y + 2][x] {
             return true;
         }
     }
 
     // If it matches with the 2 blocks to the left of it
-    if (x - 2 >= 0) {
-        if (game_board.board[y][x - 2] == game_board.board[y][x - 1] &&
-            game_board.board[y][x - 1] == game_board.board[y][x]) {
+    if x as isize - 2 >= 0 {
+        if game_board.board[y][x - 2] == game_board.board[y][x - 1] &&
+            game_board.board[y][x - 1] == game_board.board[y][x] {
             return true;
         }
     }
     // If it matches with the block to the left and to the right of it
-    if (x - 1 >= 0 && x + 1 < game_board.width) {
-        if (game_board.board[y][x - 1] == game_board.board[y][x] &&
-            game_board.board[y][x] == game_board.board[y][x + 1]) {
+    if x as isize - 1 >= 0 && x + 1 < game_board.width {
+        if game_board.board[y][x - 1] == game_board.board[y][x] &&
+            game_board.board[y][x] == game_board.board[y][x + 1] {
             return true;
         }
     }
     // If it matches with the 2 blocks to the right of it
-    if (x + 2 < game_board.width) {
-        if (game_board.board[y][x] == game_board.board[y][x + 1] &&
-            game_board.board[y][x + 1] == game_board.board[y][x + 2]) {
+    if x + 2 < game_board.width {
+        if game_board.board[y][x] == game_board.board[y][x + 1] &&
+            game_board.board[y][x + 1] == game_board.board[y][x + 2] {
             return true;
         }
     }
