@@ -11,6 +11,7 @@ struct GameBoard {
     board: Vec<Vec<isize>>,
 }
 
+#[derive(Clone)]
 struct Swap {
     y1: usize,
     x1: usize,
@@ -61,9 +62,11 @@ fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
                         ..game_board
                     };
 
+                    let moves_to_solve_copy = moves_to_solve.to_vec();
+
                     // Spawn a new thread to execute the move and continue the process
                     let handle = thread::spawn(move || {
-                        execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y + 1, x2:x}, moves_to_solve.clone());
+                        execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y + 1, x2:x}, moves_to_solve_copy);
                     });
 
                     thread_handles.push(handle);
@@ -75,9 +78,11 @@ fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
                         ..game_board
                     };
 
+                    let moves_to_solve_copy = moves_to_solve.to_vec();
+
                     // Spawn a new thread to execute the move and continue the process
                     let handle = thread::spawn(move || {
-                        execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y + 1, x2:x}, moves_to_solve.clone());
+                        execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y + 1, x2:x}, moves_to_solve_copy);
                     });
 
                     thread_handles.push(handle);
@@ -188,8 +193,11 @@ fn execute_move(mut game_board: GameBoard, swap: Swap, mut moves_to_solve : Vec<
 }
 
 
+// Check if there are any pieces that need to be removed and removes them
+// Then rearranges the board to account for pieces falling
+// Recursively calls itself until no pieces move
 fn recalculate_board(game_board: GameBoard) -> GameBoard {
-    // TODO:
+    // Get what blocks need to be removed
 
     game_board
 }
