@@ -1,6 +1,8 @@
 use serde::Deserialize;
 use serde_json;
 use std::io;
+use std::thread;
+use std::thread::JoinHandle;
 
 #[derive(Deserialize, Debug)]
 struct GameBoard {
@@ -39,6 +41,9 @@ fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
     check_for_win();
     if check_for_loss(&game_board) {panic!("The puzzle is in an unsolvable state")};
 
+    // Vector for holding all the handles to spawned threads
+    let mut thread_handles : Vec<JoinHandle<()>> = Vec::new();
+
     // For each row in the grid
     for y in 0..game_board.height {
         // For each column in the grid
@@ -51,16 +56,37 @@ fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
 
                 // Swap Down
                 if check_if_valid_move(&mut game_board, Swap{y1:y, x1:x, y2:y + 1, x2:x}) {
-                    // TODO:
+                    let game_board_copy = GameBoard{
+                        board: game_board.board.clone(),
+                        ..game_board
+                    };
+
+                    // Spawn a new thread to execute the move and continue the process
+                    let handle = thread::spawn(move || {
+                        execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y + 1, x2:x}, moves_to_solve.clone());
+                    });
+
+                    thread_handles.push(handle);
                 }
                 // Swap Right
                 if check_if_valid_move(&mut game_board, Swap{y1:y, x1:x, y2:y, x2:x + 1}) {
-                    // TODO:
+                    let game_board_copy = GameBoard{
+                        board: game_board.board.clone(),
+                        ..game_board
+                    };
+
+                    // Spawn a new thread to execute the move and continue the process
+                    let handle = thread::spawn(move || {
+                        execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y + 1, x2:x}, moves_to_solve.clone());
+                    });
+
+                    thread_handles.push(handle);
                 }
             }
         }
     }
 
+    // TODO: Maybe filler
     return moves_to_solve;
 }
 
@@ -142,6 +168,30 @@ fn check_if_blocks_removed(game_board: &GameBoard, y : usize, x : usize) -> bool
 
     // If none of the moves resulted in blocks being removed
     false
+}
+
+
+// Executes the move and continues the solve process
+fn execute_move(mut game_board: GameBoard, swap: Swap, mut moves_to_solve : Vec<Swap>) -> Vec<Swap> {
+    // Swap the 2 spots on the puzzle board
+    let temp_value = game_board.board[swap.y1][swap.x1];
+    game_board.board[swap.y1][swap.x1] = game_board.board[swap.y2][swap.x2];
+    game_board.board[swap.y2][swap.x2] = temp_value;
+
+    // Recalculate the new board as a result of that swap
+    game_board = recalculate_board(game_board);
+
+    // Repeat the solving process with the new board
+    moves_to_solve = solve(game_board, moves_to_solve);
+
+    moves_to_solve
+}
+
+
+fn recalculate_board(game_board: GameBoard) -> GameBoard {
+    // TODO:
+
+    game_board
 }
 
 
