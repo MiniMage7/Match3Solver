@@ -198,8 +198,64 @@ fn execute_move(mut game_board: GameBoard, swap: Swap, mut moves_to_solve : Vec<
 // Recursively calls itself until no pieces move
 fn recalculate_board(game_board: GameBoard) -> GameBoard {
     // Get what blocks need to be removed
+    let blocks_to_remove = check_what_blocks_to_remove(&game_board);
 
     game_board
+}
+
+
+// Iterates over the whole puzzle board and returns what blocks need to be removed
+// Return: An 2d vector of 0s and 1s where 1s represent the positions where blocks need to be removed
+fn check_what_blocks_to_remove(game_board: &GameBoard) -> Vec<Vec<usize>> {
+    let mut blocks_to_remove : Vec<Vec<usize>> = Vec::new();
+
+    // Fill blockToRemove with 0s
+    // For each row in the grid
+    for y in 0..game_board.height {
+        // For each column in the grid
+        let mut column_blocks_to_remove : Vec<usize> = Vec::new();
+        for x in 0..game_board.width {
+            column_blocks_to_remove.push(0);
+        }
+        blocks_to_remove.push(column_blocks_to_remove);
+    }
+
+    // Find the blocks that are supposed to be removed and change their marks to 1s
+    // For each row in the grid
+    for y in 0..game_board.height {
+        // For each column in the grid
+        for x in 0..game_board.width {
+            // If that piece is removable
+            if game_board.board[y][x] > 0 {
+                // We only have to check for these 2 because all the other circumstances will be checked
+                // in another piece's 2 below or 2 to the right
+
+                // Check if it can be matched with the 2 pieces below it
+                if y + 2 < game_board.height {
+                    if game_board.board[y + 2][x] == game_board[y + 1][x] &&
+                        game_board.board[y + 1][x] == game_board[y][x] {
+                        // Mark the pieces to be removed
+                        blocks_to_remove[y + 2][x] = 1;
+                        blocks_to_remove[y + 1][x] = 1;
+                        blocks_to_remove[y][x] = 1;
+                    }
+                }
+
+                // Check if it can be matched with the 2 pieces to the right of it
+                if x + 2 < game_board.width {
+                    if game_board.board[y][x] == game_board.board[y][x + 1] &&
+                        game_board.board[y][x + 1] == game_board.board[y][x + 2] {
+                        // Mark the pieces to be removed
+                        blocks_to_remove[y][x] = 1;
+                        blocks_to_remove[y][x + 1] = 1;
+                        blocks_to_remove[y][x + 2] = 1;
+                    }
+                }
+            }
+        }
+    }
+
+    blocks_to_remove
 }
 
 
