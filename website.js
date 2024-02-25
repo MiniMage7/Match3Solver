@@ -44,6 +44,12 @@ previousButton.addEventListener("click", previousBoardState);
 const nextButton = document.getElementById("next");
 nextButton.addEventListener("click", nextBoardState);
 
+// Export and import buttons
+const importButton = document.getElementById("import");
+
+const exportButton = document.getElementById("export");
+exportButton.addEventListener("click", exportBoard);
+
 // Track if the solve button is disabled due to lack of solution
 let noSolution = false;
 
@@ -240,6 +246,12 @@ function enableSolveMode() {
   // Make the next and previous buttons visible
   previousButton.style.visibility = "visible";
   nextButton.style.visibility = "visible";
+  previousButton.style.zIndex = "1";
+  nextButton.style.zIndex = "1";
+
+  // Hides the Export and Import buttons
+  importButton.style.visibility = "hidden";
+  exportButton.style.visibility = "hidden";
 
   // Enable the next button and disable the previous one
   previousButton.disabled = "disabled";
@@ -263,6 +275,12 @@ function disableSolveMode() {
   // Make the next and previous buttons hidden
   previousButton.style.visibility = "hidden";
   nextButton.style.visibility = "hidden";
+  previousButton.style.zIndex = "0";
+  nextButton.style.zIndex = "0";
+
+  // Show the export and import buttons
+  importButton.style.visibility = "visible";
+  exportButton.style.visibility = "visible";
 }
 
 // Handles moving to the next step in the solution
@@ -341,4 +359,39 @@ function highlightMove(radius) {
     tiles[Number(nextMove[0][0]) * width + Number(nextMove[0][1])].style.borderRadius = radius;
     tiles[Number(nextMove[1][0]) * width + Number(nextMove[1][1])].style.borderRadius = radius;
   }
+}
+
+// Copies the board as a json onto the clipboard
+async function exportBoard() {
+  let outputJSONString = "{ \"height\": " + height + ", \"width\": " + width + ", \"board\": ";
+  
+  // Get all the tiles
+  let tiles = tileContainer.getElementsByClassName("tile");
+
+  // For each row in the grid
+  let boardString = "["
+  for (let y = 0; y < height; y++) {
+    // For each column in the grid
+    boardString += " [ ";
+    for (let x = 0; x < width; x++) {
+      // Add that tile's c value to the row of tiles
+      const tile = tiles[y * width + x];
+      let cNumber = Number(getCNumber(tile));
+      boardString += cNumber += ", ";
+    }
+    boardString = boardString.substring(0, boardString.length - 2) + " ],";
+  }
+  boardString = boardString.substring(0, boardString.length - 1) + " ]";
+  outputJSONString += boardString + " }";
+
+  await navigator.clipboard.writeText(outputJSONString);
+  exportButton.textContent = "Copied";
+  exportButton.disabled = "disabled";
+  await sleep(3000)
+  exportButton.textContent = "Export";
+  exportButton.removeAttribute("disabled");
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
