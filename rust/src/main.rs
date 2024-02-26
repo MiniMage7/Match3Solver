@@ -32,7 +32,7 @@ fn main() {
     io::stdin().read_line(&mut game_board)
         .expect("Failed to read line.");
 
-    // Format the input into a GameBoard struct
+    // Format the input into a GameBoard struct // TODO: custom error
     let game_board: GameBoard = serde_json::from_str(&game_board).unwrap();
 
     let mut moves_to_solve : Vec<Swap> = Vec::new();
@@ -368,21 +368,18 @@ fn calculate_gravity(mut game_board: GameBoard) -> GameBoard {
 
 // Check if the puzzle is solved
 fn check_for_win(game_board: &GameBoard) -> bool {
-    let mut is_game_won = true;
-
     // For each row in the grid
-    'outer_loop : for y in 0..game_board.height {
+    for y in 0..game_board.height {
         // For each column in the grid
         for x in 0..game_board.width {
             // If there is a removable piece left
             if game_board.board[y][x] > 0 {
-                is_game_won = false;
-                break 'outer_loop;
+                return false;
             }
         }
     }
 
-    is_game_won
+    true
 }
 
 
