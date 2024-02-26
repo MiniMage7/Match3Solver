@@ -3,7 +3,6 @@ use serde_json;
 use std::io::{self, Write};
 use std::thread;
 use std::sync::mpsc;
-use std::thread::JoinHandle;
 
 #[derive(Deserialize, Debug)]
 struct GameBoard {
@@ -55,9 +54,6 @@ fn main() {
 fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
     if check_for_loss(&game_board) {return Vec::new()}; //  Return an empty vector to show failure
 
-    // Vector for holding all the handles to spawned threads TODO: probably not necessary?
-    let mut thread_handles : Vec<JoinHandle<()>> = Vec::new();
-
     // Communication between threads
     let (tx, rx) = mpsc::channel();
 
@@ -81,7 +77,7 @@ fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
                     let tx1 = tx.clone();
 
                     // Spawn a new thread to execute the move and continue the process
-                    let handle = thread::spawn(move || {
+                    thread::spawn(move || {
                         let moves_to_solve_new =
                             execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y + 1, x2:x}, moves_to_solve_copy);
                         // If moves to solve is empty here, it failed, so only send if not empty
@@ -89,8 +85,6 @@ fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
                             tx1.send(moves_to_solve_new).unwrap();
                         }
                     });
-
-                    thread_handles.push(handle);
                 }
                 // Swap Right
                 if check_if_valid_move(&mut game_board, Swap{y1:y, x1:x, y2:y, x2:x + 1}) {
@@ -102,7 +96,7 @@ fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
                     let tx1 = tx.clone();
 
                     // Spawn a new thread to execute the move and continue the process
-                    let handle = thread::spawn(move || {
+                    thread::spawn(move || {
                         let moves_to_solve_new =
                             execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y, x2:x + 1}, moves_to_solve_copy);
                         // If moves to solve is empty here, it failed, so only send if not empty
@@ -110,8 +104,6 @@ fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
                             tx1.send(moves_to_solve_new).unwrap();
                         }
                     });
-
-                    thread_handles.push(handle);
                 }
             }
         }
