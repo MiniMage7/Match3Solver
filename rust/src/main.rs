@@ -196,9 +196,32 @@ fn execute_move(mut game_board: GameBoard, swap: Swap, mut moves_to_solve : Vec<
 // Check if there are any pieces that need to be removed and removes them
 // Then rearranges the board to account for pieces falling
 // Recursively calls itself until no pieces move
-fn recalculate_board(game_board: GameBoard) -> GameBoard {
+fn recalculate_board(mut game_board: GameBoard) -> GameBoard {
     // Get what blocks need to be removed
     let blocks_to_remove = check_what_blocks_to_remove(&game_board);
+
+    let mut are_blocks_to_remove = false;
+    // For each row in the grid
+    'outer_loop: for y in 0..game_board.height {
+        // For each column in the grid
+        for  x in 0..game_board.width {
+            // If the tile is to be removed
+            if blocks_to_remove[y][x] == 1 {
+                are_blocks_to_remove = true;
+                break 'outer_loop;
+            }
+        }
+    }
+
+    // If there are any blocks to remove
+    if are_blocks_to_remove {
+        // Remove the blocks
+        // TODO:
+        // Make all the blocks fall down
+        // TODO:
+        // Restart this process
+        game_board = recalculate_board(game_board);
+    }
 
     game_board
 }
@@ -211,10 +234,10 @@ fn check_what_blocks_to_remove(game_board: &GameBoard) -> Vec<Vec<usize>> {
 
     // Fill blockToRemove with 0s
     // For each row in the grid
-    for y in 0..game_board.height {
+    for _y in 0..game_board.height {
         // For each column in the grid
         let mut column_blocks_to_remove : Vec<usize> = Vec::new();
-        for x in 0..game_board.width {
+        for _x in 0..game_board.width {
             column_blocks_to_remove.push(0);
         }
         blocks_to_remove.push(column_blocks_to_remove);
@@ -232,8 +255,8 @@ fn check_what_blocks_to_remove(game_board: &GameBoard) -> Vec<Vec<usize>> {
 
                 // Check if it can be matched with the 2 pieces below it
                 if y + 2 < game_board.height {
-                    if game_board.board[y + 2][x] == game_board[y + 1][x] &&
-                        game_board.board[y + 1][x] == game_board[y][x] {
+                    if game_board.board[y + 2][x] == game_board.board[y + 1][x] &&
+                        game_board.board[y + 1][x] == game_board.board[y][x] {
                         // Mark the pieces to be removed
                         blocks_to_remove[y + 2][x] = 1;
                         blocks_to_remove[y + 1][x] = 1;
