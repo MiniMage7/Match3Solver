@@ -1,6 +1,6 @@
 use serde::Deserialize;
 use serde_json;
-use std::io;
+use std::io::{self, Write};
 use std::thread;
 use std::thread::JoinHandle;
 
@@ -24,6 +24,11 @@ fn main() {
     // Get the game board as a JSON formatted string from the user
     let mut game_board = String::new();
 
+    println!("Paste your exported board here:");
+    println!("(You can get your board by drawing it on the website and clicking the export button)");
+    print!("> ");
+
+    let _ = io::stdout().flush();
     io::stdin().read_line(&mut game_board)
         .expect("Failed to read line.");
 
@@ -281,9 +286,9 @@ fn check_what_blocks_to_remove(game_board: &GameBoard) -> Vec<Vec<usize>> {
     blocks_to_remove
 }
 
-// Takes an array of 1's and 0's and the GameBoard
+// Takes an array of 1s and 0s and the GameBoard
 // Removes all blocks from the puzzle board where the given array has a 1 in the same position
-// Used with checkWhatBlocksToRemove()
+// Used with check_what_blocks_to_remove()
 fn remove_given_blocks(mut game_board: GameBoard, blocks_to_remove : Vec<Vec<usize>>) -> GameBoard {
     // For each row in the grid
     for y in 0..game_board.height {
