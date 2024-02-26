@@ -223,7 +223,7 @@ fn recalculate_board(mut game_board: GameBoard) -> GameBoard {
         // Remove the blocks
         game_board = remove_given_blocks(game_board, blocks_to_remove);
         // Make all the blocks fall down
-        // TODO:
+        game_board = calculate_gravity(game_board);
         // Restart this process
         game_board = recalculate_board(game_board);
     }
