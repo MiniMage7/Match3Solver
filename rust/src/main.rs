@@ -306,6 +306,37 @@ fn remove_given_blocks(mut game_board: GameBoard, blocks_to_remove : Vec<Vec<usi
 }
 
 
+// Moves all blocks with air under them down 1
+// Recursively calls itself until no blocks move
+// Blockers (-1s) do not fall
+fn calculate_gravity(mut game_board: GameBoard) -> GameBoard {
+    let mut did_blocks_move = false;
+
+    // For each row in the grid (bottom to top skipping bottom most row)
+    for y in (0..game_board.height - 1).rev() {
+        // For each column in the grid
+        for x in 0..game_board.width {
+            // If the piece is affected by gravity
+            if game_board.board[y][x] > 0 {
+                // If there is air below it
+                if game_board.board[y + 1][x] == 0 {
+                    // Move it down to that block
+                    game_board.board[y + 1][x] = game_board.board[y][x];
+                    game_board.board[y][x] = 0;
+                    did_blocks_move = true;
+                }
+            }
+        }
+    }
+
+    // If any blocks moved, check if more gravity is needed
+    if did_blocks_move {
+        game_board = calculate_gravity(game_board);
+    }
+
+    game_board
+}
+
 
 // Check if the puzzle is solved and stop the solve if it is
 fn check_for_win() {
