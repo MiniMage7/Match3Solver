@@ -39,10 +39,10 @@ fn main() {
 
     moves_to_solve = solve(game_board, moves_to_solve);
 
+    println!();
     if moves_to_solve.is_empty() {
-        println!("The puzzle is impossible.") // TODO: Maybe?
+        println!("The puzzle is impossible.")
     }
-
     for swap in moves_to_solve {
         println!("Swap {}, {} with {}, {}", swap.y1, swap.x1, swap.y2, swap.x2);
     }
@@ -82,7 +82,7 @@ fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
                             execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y + 1, x2:x}, moves_to_solve_copy);
                         // If moves to solve is empty here, it failed, so only send if not empty
                         if !moves_to_solve_new.is_empty(){
-                            tx1.send(moves_to_solve_new).unwrap();
+                            tx1.send(moves_to_solve_new).unwrap_or_else(|_error| return);
                         }
                     });
                 }
@@ -101,7 +101,7 @@ fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
                             execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y, x2:x + 1}, moves_to_solve_copy);
                         // If moves to solve is empty here, it failed, so only send if not empty
                         if !moves_to_solve_new.is_empty(){
-                            tx1.send(moves_to_solve_new).unwrap();
+                            tx1.send(moves_to_solve_new).unwrap_or_else(|_error| return);
                         }
                     });
                 }
