@@ -216,7 +216,7 @@ fn recalculate_board(mut game_board: GameBoard) -> GameBoard {
     // If there are any blocks to remove
     if are_blocks_to_remove {
         // Remove the blocks
-        // TODO:
+        game_board = remove_given_blocks(game_board, blocks_to_remove);
         // Make all the blocks fall down
         // TODO:
         // Restart this process
@@ -280,6 +280,26 @@ fn check_what_blocks_to_remove(game_board: &GameBoard) -> Vec<Vec<usize>> {
 
     blocks_to_remove
 }
+
+// Takes an array of 1's and 0's and the GameBoard
+// Removes all blocks from the puzzle board where the given array has a 1 in the same position
+// Used with checkWhatBlocksToRemove()
+fn remove_given_blocks(mut game_board: GameBoard, blocks_to_remove : Vec<Vec<usize>>) -> GameBoard {
+    // For each row in the grid
+    for y in 0..game_board.height {
+        // For each column in the grid
+        for  x in 0..game_board.width {
+            // If the tile is to be removed
+            if blocks_to_remove[y][x] == 1 {
+                // Remove the tile
+                game_board.board[y][x] = 0;
+            }
+        }
+    }
+
+    game_board
+}
+
 
 
 // Check if the puzzle is solved and stop the solve if it is
