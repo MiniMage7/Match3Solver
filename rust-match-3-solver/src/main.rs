@@ -32,12 +32,25 @@ fn main() {
     io::stdin().read_line(&mut game_board)
         .expect("Failed to read line.");
 
-    // Format the input into a GameBoard struct // TODO: custom error
-    let game_board: GameBoard = serde_json::from_str(&game_board).unwrap();
+    // Format the input into a GameBoard struct
+    let game_board: GameBoard = serde_json::from_str(&game_board).unwrap_or_else(|_error| panic!("That is not a valid gameboard."));
+
+    // Get the number of thread layers from the user
+    let mut max_thread_depth = String::new();
+
+    println!("How mant layers of threads do you want to spawn?");
+    println!("2 is recommended for most solves. 1 might be neccessary for the larger solves. Larger numbers are faster but more intensive.");
+    print!("> ");
+    
+    let _ = io::stdout().flush();
+    io::stdin().read_line(&mut max_thread_depth)
+        .expect("Failed to read line.");
+
+    let max_thread_depth = max_thread_depth.parse::<usize>().unwrap_or_else(|_error| panic!("That is not a valid number."));
 
     let mut moves_to_solve : Vec<Swap> = Vec::new();
 
-    moves_to_solve = solve(game_board, moves_to_solve);
+    moves_to_solve = solve(game_board, moves_to_solve, max_thread_depth);
 
     println!();
     if moves_to_solve.is_empty() {
@@ -51,7 +64,7 @@ fn main() {
 
 // Checks if the board has any valid moves and spawns a new thread to do any found moves
 // Those threads will do all the logic for the move and then start from this function again
-fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
+fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>, thread_depth_remaining : usize) -> Vec<Swap> {
     if check_for_loss(&game_board) {return Vec::new()}; //  Return an empty vector to show failure
 
     // Communication between threads
@@ -76,15 +89,26 @@ fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
                     let moves_to_solve_copy = moves_to_solve.to_vec();
                     let tx1 = tx.clone();
 
-                    // Spawn a new thread to execute the move and continue the process
-                    thread::spawn(move || {
+                    // If there is thread depth remaining, make a new thread
+                    if thread_depth_remaining > 0 {
+                        // Spawn a new thread to execute the move and continue the process
+                        thread::spawn(move || {
+                            let moves_to_solve_new =
+                                execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y + 1, x2:x}, moves_to_solve_copy, thread_depth_remaining - 1);
+                            // If moves to solve is empty here, it failed, so only send if not empty
+                            if !moves_to_solve_new.is_empty(){
+                                tx1.send(moves_to_solve_new).unwrap_or_else(|_error| return);
+                            }
+                        });
+                    }
+                    // Otherwise run the code in this thread
+                    else {
                         let moves_to_solve_new =
-                            execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y + 1, x2:x}, moves_to_solve_copy);
-                        // If moves to solve is empty here, it failed, so only send if not empty
-                        if !moves_to_solve_new.is_empty(){
-                            tx1.send(moves_to_solve_new).unwrap_or_else(|_error| return);
+                                execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y + 1, x2:x}, moves_to_solve_copy, 0);
+                        if !moves_to_solve_new.is_empty() {
+                            return moves_to_solve_new;
                         }
-                    });
+                    }
                 }
                 // Swap Right
                 if check_if_valid_move(&mut game_board, Swap{y1:y, x1:x, y2:y, x2:x + 1}) {
@@ -95,15 +119,26 @@ fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
                     let moves_to_solve_copy = moves_to_solve.to_vec();
                     let tx1 = tx.clone();
 
-                    // Spawn a new thread to execute the move and continue the process
-                    thread::spawn(move || {
+                    // If there is thread depth remaining, make a new thread
+                    if thread_depth_remaining > 0 {
+                        // Spawn a new thread to execute the move and continue the process
+                        thread::spawn(move || {
+                            let moves_to_solve_new =
+                                execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y, x2:x + 1}, moves_to_solve_copy, thread_depth_remaining - 1);
+                            // If moves to solve is empty here, it failed, so only send if not empty
+                            if !moves_to_solve_new.is_empty(){
+                                tx1.send(moves_to_solve_new).unwrap_or_else(|_error| return);
+                            }
+                        });
+                    }
+                    // Otherwise run the code in this thread
+                    else {
                         let moves_to_solve_new =
-                            execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y, x2:x + 1}, moves_to_solve_copy);
-                        // If moves to solve is empty here, it failed, so only send if not empty
-                        if !moves_to_solve_new.is_empty(){
-                            tx1.send(moves_to_solve_new).unwrap_or_else(|_error| return);
+                                execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y, x2:x + 1}, moves_to_solve_copy, 0);
+                        if !moves_to_solve_new.is_empty() {
+                            return moves_to_solve_new;
                         }
-                    });
+                    }
                 }
             }
         }
@@ -204,7 +239,7 @@ fn check_if_blocks_removed(game_board: &GameBoard, y : usize, x : usize) -> bool
 
 
 // Executes the move and continues the solve process
-fn execute_move(mut game_board: GameBoard, swap: Swap, mut moves_to_solve : Vec<Swap>) -> Vec<Swap> {
+fn execute_move(mut game_board: GameBoard, swap: Swap, mut moves_to_solve : Vec<Swap>, thread_depth_remaining : usize) -> Vec<Swap> {
     // Swap the 2 spots on the puzzle board
     let temp_value = game_board.board[swap.y1][swap.x1];
     game_board.board[swap.y1][swap.x1] = game_board.board[swap.y2][swap.x2];
@@ -220,7 +255,7 @@ fn execute_move(mut game_board: GameBoard, swap: Swap, mut moves_to_solve : Vec<
     if check_for_win(&game_board) {return moves_to_solve}
 
     // Repeat the solving process with the new board
-    moves_to_solve = solve(game_board, moves_to_solve);
+    moves_to_solve = solve(game_board, moves_to_solve, thread_depth_remaining);
 
     moves_to_solve
 }
