@@ -2,6 +2,7 @@ use serde::Deserialize;
 use serde_json;
 use std::io::{self, Write};
 use std::thread;
+use std::sync::mpsc;
 use std::thread::JoinHandle;
 
 #[derive(Deserialize, Debug)]
@@ -35,20 +36,31 @@ fn main() {
     // Format the input into a GameBoard struct
     let game_board: GameBoard = serde_json::from_str(&game_board).unwrap();
 
-    let moves_to_solve : Vec<Swap> = Vec::new();
+    let mut moves_to_solve : Vec<Swap> = Vec::new();
 
-    solve(game_board, moves_to_solve);
+    moves_to_solve = solve(game_board, moves_to_solve);
+
+    if moves_to_solve.is_empty() {
+        println!("The puzzle is impossible.") // TODO: Maybe?
+    }
+
+    for swap in moves_to_solve {
+        println!("Swap {}, {} with {}, {}", swap.y1, swap.x1, swap.y2, swap.x2);
+    }
 }
 
 
 // Checks if the board has any valid moves and spawns a new thread to do any found moves
 // Those threads will do all the logic for the move and then start from this function again
 fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
-    check_for_win();
+    if check_for_win(&game_board) {return moves_to_solve};
     if check_for_loss(&game_board) {panic!("The puzzle is in an unsolvable state")};
 
-    // Vector for holding all the handles to spawned threads
+    // Vector for holding all the handles to spawned threads TODO: probably not necessary?
     let mut thread_handles : Vec<JoinHandle<()>> = Vec::new();
+
+    // Communication between threads
+    let (tx, rx) = mpsc::channel();
 
     // For each row in the grid
     for y in 0..game_board.height {
@@ -62,32 +74,44 @@ fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
 
                 // Swap Down
                 if check_if_valid_move(&mut game_board, Swap{y1:y, x1:x, y2:y + 1, x2:x}) {
+                    println!("Move Happened");
+
                     let game_board_copy = GameBoard{
                         board: game_board.board.clone(),
                         ..game_board
                     };
-
                     let moves_to_solve_copy = moves_to_solve.to_vec();
+                    let tx1 = tx.clone();
 
                     // Spawn a new thread to execute the move and continue the process
                     let handle = thread::spawn(move || {
-                        execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y + 1, x2:x}, moves_to_solve_copy);
+                        let moves_to_solve_new =
+                            execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y + 1, x2:x}, moves_to_solve_copy);
+                        // If the execution gets here, the thread was successful and has the correct set of moves to solve
+                        // So send those moves to the parent thread
+                        tx1.send(moves_to_solve_new).unwrap();
                     });
 
                     thread_handles.push(handle);
                 }
                 // Swap Right
                 if check_if_valid_move(&mut game_board, Swap{y1:y, x1:x, y2:y, x2:x + 1}) {
+                    println!("Move Happened");
+
                     let game_board_copy = GameBoard{
                         board: game_board.board.clone(),
                         ..game_board
                     };
-
                     let moves_to_solve_copy = moves_to_solve.to_vec();
+                    let tx1 = tx.clone();
 
                     // Spawn a new thread to execute the move and continue the process
                     let handle = thread::spawn(move || {
-                        execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y + 1, x2:x}, moves_to_solve_copy);
+                        let moves_to_solve_new =
+                            execute_move(game_board_copy, Swap{y1:y, x1:x, y2:y, x2:x + 1}, moves_to_solve_copy);
+                        // If the execution gets here, the thread was successful and has the correct set of moves to solve
+                        // So send those moves to the parent thread
+                        tx1.send(moves_to_solve_new).unwrap();
                     });
 
                     thread_handles.push(handle);
@@ -96,7 +120,13 @@ fn solve(mut game_board: GameBoard, moves_to_solve : Vec<Swap>) -> Vec<Swap> {
         }
     }
 
-    // TODO: Maybe filler
+    // Get the moves to solve from the passed threads
+    // Any threads that don't find the solution will just die
+    // So this will only return something from a successful thread
+    // If all the child threads fail, this will panic, showing this branch of threads was wrong
+    // TODO: handle if there is no solution to the puzzle
+    let moves_to_solve = rx.recv().unwrap();
+
     return moves_to_solve;
 }
 
@@ -187,6 +217,9 @@ fn execute_move(mut game_board: GameBoard, swap: Swap, mut moves_to_solve : Vec<
     let temp_value = game_board.board[swap.y1][swap.x1];
     game_board.board[swap.y1][swap.x1] = game_board.board[swap.y2][swap.x2];
     game_board.board[swap.y2][swap.x2] = temp_value;
+
+    // Add the move to moves_to_solve
+    moves_to_solve.push(swap);
 
     // Recalculate the new board as a result of that swap
     game_board = recalculate_board(game_board);
@@ -338,9 +371,23 @@ fn calculate_gravity(mut game_board: GameBoard) -> GameBoard {
 }
 
 
-// Check if the puzzle is solved and stop the solve if it is
-fn check_for_win() {
-    // TODO:
+// Check if the puzzle is solved
+fn check_for_win(game_board: &GameBoard) -> bool {
+    let mut is_game_won = true;
+
+    // For each row in the grid
+    'outer_loop : for y in 0..game_board.height {
+        // For each column in the grid
+        for x in 0..game_board.width {
+            // If there is a removable piece left
+            if game_board.board[y][x] > 0 {
+                is_game_won = false;
+                break 'outer_loop;
+            }
+        }
+    }
+
+    is_game_won
 }
 
 
