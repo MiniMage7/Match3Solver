@@ -19,9 +19,6 @@ struct Swap {
     x2: usize,
 }
 
-// TODO: Make this user changeable
-const MAX_THREADS_DEPTH: usize = 2;
-
 
 fn main() {
     // Get the game board as a JSON formatted string from the user
@@ -35,12 +32,25 @@ fn main() {
     io::stdin().read_line(&mut game_board)
         .expect("Failed to read line.");
 
-    // Format the input into a GameBoard struct // TODO: custom error
-    let game_board: GameBoard = serde_json::from_str(&game_board).unwrap();
+    // Format the input into a GameBoard struct
+    let game_board: GameBoard = serde_json::from_str(&game_board).unwrap_or_else(|_error| panic!("That is not a valid gameboard."));
+
+    // Get the number of thread layers from the user
+    let mut max_thread_depth = String::new();
+
+    println!("How mant layers of threads do you want to spawn?");
+    println!("2 is recommended for most solves. 1 might be neccessary for the larger solves. Larger numbers are faster but more intensive.");
+    print!("> ");
+    
+    let _ = io::stdout().flush();
+    io::stdin().read_line(&mut max_thread_depth)
+        .expect("Failed to read line.");
+
+    let max_thread_depth = max_thread_depth.parse::<usize>().unwrap_or_else(|_error| panic!("That is not a valid number."));
 
     let mut moves_to_solve : Vec<Swap> = Vec::new();
 
-    moves_to_solve = solve(game_board, moves_to_solve, MAX_THREADS_DEPTH);
+    moves_to_solve = solve(game_board, moves_to_solve, max_thread_depth);
 
     println!();
     if moves_to_solve.is_empty() {
