@@ -27,7 +27,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rust"
+name = "rust-match-3-solver"
 version = "0.1.0"
 dependencies = [
  "serde",
