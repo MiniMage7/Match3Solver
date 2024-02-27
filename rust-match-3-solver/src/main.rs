@@ -46,7 +46,7 @@ fn main() {
     io::stdin().read_line(&mut max_thread_depth)
         .expect("Failed to read line.");
 
-    let max_thread_depth = max_thread_depth.parse::<usize>().unwrap_or_else(|_error| panic!("That is not a valid number."));
+    let max_thread_depth = max_thread_depth.trim().parse::<usize>().unwrap_or_else(|_error| panic!("That is not a valid number."));
 
     let mut moves_to_solve : Vec<Swap> = Vec::new();
 
