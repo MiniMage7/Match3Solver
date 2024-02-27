@@ -18,4 +18,4 @@ The program will then ask for how many thread layers are wanted. Must puzzles ca
 Even though this implementation is intended to solve the larger puzzles, there is 1 known puzzle in Islands of Insight that this implementation can't solve due to the over a trillion board states. It could probably be solved if you have a thread ripper and a decent chunk of ram and time though if someone wants to try that.
 
 ### Output
-The program will output a series of swaps in `y1, x1 with y2, x2` format. The top left corner is (0,0). And the tile to the right of that is (0,1). The rest can be easily extrapolated from there.
+The program will output a series of swaps in `y1,x1 with y2,x2` format. The top left corner is (0,0). And the tile to the right of that is (0,1). The rest can be easily extrapolated from there.

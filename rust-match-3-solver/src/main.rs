@@ -24,7 +24,7 @@ fn main() {
     // Get the game board as a JSON formatted string from the user
     let mut game_board = String::new();
 
-    println!("Paste your exported board here:");
+    println!("\nPaste your exported board here:");
     println!("(You can get your board by drawing it on the website and clicking the export button)");
     print!("> ");
 
@@ -38,7 +38,7 @@ fn main() {
     // Get the number of thread layers from the user
     let mut max_thread_depth = String::new();
 
-    println!("How mant layers of threads do you want to spawn?");
+    println!("\nHow many layers of threads do you want to spawn?");
     println!("2 is recommended for most solves. 1 might be necessary for the larger solves. Larger numbers are faster but more intensive.");
     print!("> ");
     
@@ -56,8 +56,12 @@ fn main() {
     if moves_to_solve.is_empty() {
         println!("The puzzle is impossible.")
     }
+    else {
+        println!("Use for following moves to solve:");
+        println!("0,0 is top left. 1,0 is below that. 0,1 is to the right\n");
+    }
     for swap in moves_to_solve {
-        println!("Swap {}, {} with {}, {}", swap.y1, swap.x1, swap.y2, swap.x2);
+        println!("Swap {},{} with {},{}", swap.y1, swap.x1, swap.y2, swap.x2);
     }
 }
 
