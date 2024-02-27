@@ -33,13 +33,13 @@ fn main() {
         .expect("Failed to read line.");
 
     // Format the input into a GameBoard struct
-    let game_board: GameBoard = serde_json::from_str(&game_board).unwrap_or_else(|_error| panic!("That is not a valid gameboard."));
+    let game_board: GameBoard = serde_json::from_str(&game_board).unwrap_or_else(|_error| panic!("That is not a valid game board."));
 
     // Get the number of thread layers from the user
     let mut max_thread_depth = String::new();
 
     println!("How mant layers of threads do you want to spawn?");
-    println!("2 is recommended for most solves. 1 might be neccessary for the larger solves. Larger numbers are faster but more intensive.");
+    println!("2 is recommended for most solves. 1 might be necessary for the larger solves. Larger numbers are faster but more intensive.");
     print!("> ");
     
     let _ = io::stdout().flush();
