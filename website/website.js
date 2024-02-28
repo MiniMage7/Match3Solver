@@ -376,10 +376,10 @@ function highlightMove(radius) {
   }
 }
 
-// Copies the board as a json onto the clipboard
-async function exportBoard() {
-  let outputJSONString = "{ \"height\": " + height + ", \"width\": " + width + ", \"board\": ";
-  
+// Copies the board as a json onto the clipboard and to a TextArea.
+async function exportBoard(e) {
+  let outputJSONString = '{"width":' + width + ',"height":' + height + ',"board":';
+
   // Get all the tiles
   let tiles = tileContainer.getElementsByClassName("tile");
 
@@ -391,6 +391,7 @@ async function exportBoard() {
     for (let x = 0; x < width; x++) {
       // Add that tile's c value to the row of tiles
       const tile = tiles[y * width + x];
+      // Get the tiles c number
       let cNumber = Number(getCNumber(tile));
       boardString += cNumber += ",";
     }
@@ -408,31 +409,65 @@ async function exportBoard() {
   await sleep(3000)
   exportButton.textContent = "Export";
   exportButton.removeAttribute("disabled");
+
+  // Send to text area too if available (vending machine style)
+  let puzerr = document.getElementById("puzerr");
+  if (puzerr !== null) {
+    puzerr.innerHTML = outputJSONString;
+  }
 }
 
-// Imports a json (string) from the clipboard and onto the board
-async function importBoard() {
+// Imports a json (string) from the clipboard or TextArea to build the board
+async function importBoard(e) {
+  // If the website is in solve mode, disable it
+  if (inSolveMode) {
+    disableSolveMode();
+  }
+  // Start with a clean slate;
+  clearGrid(e);
+
+  let puzTextArea = document.getElementById("puzzlevalue");
+  let puzerr = document.getElementById("puzerr");
+  let importJSONString = "";
+
+  if (puzerr !== null) {
+    puzerr.innerHTML = "";  New import means no errors, yet!
+  }
   // Read JSON from clipboard
-  let importJSONString;
   try {
     importJSONString = await navigator.clipboard.readText();
   } catch (error) {
     // I feel like there is something I'm missing because Firefox's documentation makes it look like I can do this
     // but I can't figure it out. Would appreciate help.
-    alert("This broswer doesn't support copying from the clipboard.\nChrome and Edge are confirmed to work.");
+    if (puzerr !== null) {
+      puzerr.innerHTML = error.name + ": " + error.message + "\nThis browser doesn't support copying from the clipboard.\nChrome and Edge are confirmed to work.";
+    } else { // Fallback to alert
+      alert("This broswer doesn't support copying from the clipboard.\nChrome and Edge are confirmed to work.");
+    }
+    // Fallback to trying from TextArea
+    if (puzTextArea !== null) {
+      importJSONString = puzTextArea.value; // TextArea
+    }
   }
   
-  let importedBoard;
+  // Update all the tiles in the board
+  const tiles = tileContainer.getElementsByClassName("tile");
+  let importedBoard = [];
+  let importedJSON = "";
+  let jsonKeys = [];
+  let maxMoves = 0;
 
-  // Try to extract the data from the clipboard text
-  try {
+  if (importJSONString.length < '{"tiles":{}}'.length
+      || importJSONString.length < '{"board":[]}') return; // Nothing important to parse.
+
+  try { // Proper error handling of JSON parsing.
     importedJSON = JSON.parse(importJSONString);
-
-    heightBox.value = importedJSON.height;
-    widthBox.value = importedJSON.width;
-
-    importedBoard = importedJSON.board;
-  } catch {
+  } catch (err) {
+    if (puzerr !== null) {
+      puzerr.innerHTML = err.name + ": " + err.message;
+    } else { // Fallback to alert
+      alert(err.name + ": " + err.message);
+    }
     importButton.textContent = "Invalid";
     importButton.style.disabled = "disabled";
     await sleep(3000);
@@ -440,20 +475,94 @@ async function importBoard() {
     importButton.removeAttribute("disabled");
     return;
   }
+  jsonKeys = Object.keys(importedJSON);
+
+  // Restore JSON elements; The next 4 are optional fields, default = 8
+  if (jsonKeys.includes("rows")) {
+    heightBox.value = importedJSON["rows"];
+  }
+  if (jsonKeys.includes("cols")) {
+    widthBox.value = importedJSON["cols"];
+  }
+  if (jsonKeys.includes("height")) {
+    heightBox.value = importedJSON["height"];
+  }
+  if (jsonKeys.includes("width")) {
+    widthBox.value = importedJSON["width"];
+  }
   
   // Resize the grid
   updateGridSize();
 
-  // Update all the tiles in the board
-  const tiles = tileContainer.getElementsByClassName("tile");
 
-  for (let index = 0; index < tiles.length; index++) {
-    const tile = tiles[index];
-    // Get the tiles c number
-    let cNumber = Number(getCNumber(tile));
-    // Replace its c class with the c Number from the stored board state
-    let newCNumber = importedBoard[Math.floor(index / width)][index % width];
-    tile.classList.replace("c" + cNumber, "c" + newCNumber);
+  if (jsonKeys.includes("board")) {
+    importedBoard = importedJSON.board;
+    for (let index = 0; index < tiles.length; index++) {
+      const tile = tiles[index];
+      // Get the tiles c number
+      let cNumber = Number(getCNumber(tile));
+      // Replace its c class with the c Number from the stored board state
+      let newCNumber = importedBoard[Math.floor(index / width)][index % width];
+      tile.classList.replace("c" + cNumber, "c" + newCNumber);
+      drawGlyphByNum(newCNumber, tile);
+    }
+  }
+  if (jsonKeys.includes("tiles")) { // Old format
+    jsonKeys = Object.keys(importedJSON["tiles"]);
+    for (let index = 0; index < jsonKeys.length; index++) {
+      let tileIndex = Number(jsonKeys[index]);
+      if (tileIndex >= height * width) break; // Too many tiles for matrix, so truncate;
+      let tile = tiles[tileIndex];
+      // Get the tiles c number
+      let cNumber = Number(getCNumber(tile));
+      // Restore current tile value
+      tile.classList.replace("c" + cNumber, "c" + importedJSON["tiles"][jsonKeys[index]]);
+      drawGlyphByNum(importedJSON["tiles"][jsonKeys[index]], tile);
+    }
+  }
+
+  /* Format for puzzle solves:
+   * Each tile swap tuple coord will get assigned a move number starting at 0.
+   *
+   * Example JSON:
+   *   {"width":3, "height":2, "moves":1, "swaps":[[[0,1], [1,1]]], "board": [[2,1,2], [1,2,1]]}
+   *                                    Move #0        Move #1
+   *   If more than one move: "swaps":[ [[0,1],[1,1]], [[0,1],[1,1]] ]
+   *
+   * Example JSON from main.py:
+   *   {"width":9, "height":6, "moves":10, "swaps":[[[3, 3], [3, 4]], [[3, 4], [3, 5]], [[3, 5], [3, 6]], [[3, 6], [3, 7]], [[3, 7], [3, 8]], [[3, 6], [3, 7]], [[3, 5], [3, 6]], [[3, 4], [3, 5]], [[3, 3], [3, 4]], [[3, 2], [3, 3]]], "board":[[0,0,0,1,2,3,4,2,0],[0,0,0,5,1,2,3,4,0],[0,0,0,3,4,5,1,6,0],[7,7,5,6,3,4,5,1,7],[-1,-1,-1,3,4,5,1,6,2],[-1,-1,-1,5,1,2,3,4,2]]}
+   *
+   *
+   */
+  if (jsonKeys.includes("moves")) {
+    maxMoves = Number(importedJSON["moves"]);
+  }
+  if (jsonKeys.includes("swaps")) { // Needs to be last key checked.
+    if (maxMoves <= 0) {
+      puzerr.innerHTML = "Invalid Puzzle JSON solution format; no moves.";
+      // Start with a clean slate;
+      clearGrid(e);
+      return; // We don't want to enter puzzle solve mode.
+    }
+    if (maxMoves > importedJSON["swaps"].length) {
+      puzerr.innerHTML = "Invalid Puzzle JSON solution format; too many moves.";
+      // Start with a clean slate;
+      clearGrid(e);
+      return; // We don't want to enter puzzle solve mode.
+    }
+
+    // Set up for showing solution
+    setUpBoard();
+    // Import Moves
+    for (let i = 0; i < importedJSON["swaps"].length; i++) {
+      let csw = importedJSON["swaps"][i];
+      // Store up the solved board moves
+      executeSolvedMove(csw[0][0], csw[0][1], csw[1][0], csw[1][1]);
+    }
+    // Add the empty board state to the stored boards
+    storedBoards.push(JSON.parse(JSON.stringify(puzzleBoard)));
+    // Now that everything is loaded, enter puzzle solve mode
+    enableSolveMode();
   }
 }
 
@@ -555,7 +664,7 @@ function drawGlyphByNum(glyphNum = 0, e) {
     drawGlyphList(e, drawGlyph10);
     break;
   default: // Error condition
-    console.log(String(glyphNum));
+    console.log("Unknown Glyph number: " + String(glyphNum));
   }
 }
 

@@ -196,6 +196,22 @@ function executeMove(y1, x1, y2, x2) {
     storedBoards.pop();
 }
 
+// Executes a given solution found move on the board
+// Input coordinates y1, x1 to be swapped with y2, x2
+function executeSolvedMove(y1, x1, y2, x2) {
+  if (checkValidMove(y1, x1, y2, x2)) {
+    // Add the move to the move list (for highlight)
+    movesToSolve.push([[y1, x1, dict[puzzleBoard[y1][x1]]], [y2, x2, dict[puzzleBoard[y2][x2]]]]);
+    // Add board state to the saved boards
+    storedBoards.push(JSON.parse(JSON.stringify(puzzleBoard)));
+    // Execute the move and recalculate the new puzzle board
+    let tempValue = puzzleBoard[y1][x1];
+    puzzleBoard[y1][x1] = puzzleBoard[y2][x2];
+    puzzleBoard[y2][x2] = tempValue;
+    recalculateBoard();
+  } // Invalid moves get silently discarded
+}
+
 // Check if there are any pieces that need to be removed and removes them
 // Then rearranges the board to account for pieces falling
 // Recursively calls itself until no pieces move

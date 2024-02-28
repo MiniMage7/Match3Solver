@@ -48,6 +48,11 @@ textarea {
   margin-bottom: 20px;
 }
 
+#puzzlevalue {
+  resize: auto;
+  margin-bottom: 0px;
+}
+
 /* The wrapper around the width height and x to make them look proper */
 #gridsizecontainer {
   display: inline-grid;
