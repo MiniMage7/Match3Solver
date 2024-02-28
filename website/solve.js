@@ -186,7 +186,7 @@ function executeMove(y1, x1, y2, x2) {
     // Attempt to do the next move
     solve();
 
-    // If this line was reached, the move was inccorect, so revert to the old board state
+    // If this line was reached, the move was incorrect, so revert to the old board state
     puzzleBoard.length = 0;
     for (let index = 0; index < height; index++) {
         puzzleBoard.push(oldBoardState[index]);
