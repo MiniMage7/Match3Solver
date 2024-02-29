@@ -411,9 +411,9 @@ async function exportBoard(e) {
   exportButton.removeAttribute("disabled");
 
   // Send to text area too if available (vending machine style)
-  let puzerr = document.getElementById("puzerr");
-  if (puzerr !== null) {
-    puzerr.innerHTML = outputJSONString;
+  let puzval = document.getElementById("puzzlevalue");
+  if (puzval !== null) {
+    puzval.value = outputJSONString;
   }
 }
 
