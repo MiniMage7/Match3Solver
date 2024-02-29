@@ -48,6 +48,11 @@ textarea {
   margin-bottom: 20px;
 }
 
+#puzzlevalue {
+  resize: auto;
+  margin-bottom: 0px;
+}
+
 /* The wrapper around the width height and x to make them look proper */
 #gridsizecontainer {
   display: inline-grid;
@@ -112,7 +117,7 @@ input[type=number] {
 .c5 {background-color: #FF8C00;}
 .c5:hover {background-color: #C26A00;}
 
-.c6 {background-color: #FFDD00;}
+.c6 {background-color: #FFDD00;}  /* rgb(230,187,150) is easier to read */
 .c6:hover {background-color: #CCB100;}
 
 .c7 {background-color: #8DDC0D;}

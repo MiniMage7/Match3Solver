@@ -23,6 +23,8 @@ struct Swap {
 fn main() {
     // Get the game board as a JSON formatted string from the user
     let mut game_board = String::new();
+    let mut sol_json;
+    let mut _game_board_orig: GameBoard;
 
     println!("\nPaste your exported board here:");
     println!("(You can get your board by drawing it on the website and clicking the export button)");
@@ -32,8 +34,14 @@ fn main() {
     io::stdin().read_line(&mut game_board)
         .expect("Failed to read line.");
 
+    // Save a copy for the Solution JSON
+    sol_json = game_board.clone();
+
     // Format the input into a GameBoard struct
     let game_board: GameBoard = serde_json::from_str(&game_board).unwrap_or_else(|_error| panic!("That is not a valid game board."));
+
+    // Save a copy for the Solution JSON
+    let _game_board_orig: GameBoard = serde_json::from_str(&sol_json).unwrap_or_else(|_error| panic!("That is not a valid game board."));
 
     // Get the number of thread layers from the user
     let mut max_thread_depth = String::new();
@@ -59,9 +67,40 @@ fn main() {
     else {
         println!("Use for following moves to solve:");
         println!("0,0 is top left. 1,0 is below that. 0,1 is to the right\n");
-    }
-    for swap in moves_to_solve {
-        println!("Swap {},{} with {},{}", swap.y1, swap.x1, swap.y2, swap.x2);
+        for swap in moves_to_solve.iter() {  // Use iter() vs iter_into()
+          println!("Swap {},{} with {},{}", swap.y1, swap.x1, swap.y2, swap.x2);
+        }
+        println!();
+        // Build Puzzle JSON Solution for website
+        sol_json = "{\"width\":".to_string() + &_game_board_orig.width.to_string();
+        sol_json = sol_json + ", \"height\":" + &_game_board_orig.height.to_string();
+        sol_json = sol_json + ", \"moves\":" + &moves_to_solve.len().to_string();
+        sol_json = sol_json + ", \"swaps\":[";
+        for (sw, swap) in moves_to_solve.iter().enumerate() {
+          sol_json = sol_json + "[[" + &swap.y1.to_string() + "," + &swap.x1.to_string() + "],[";
+          sol_json = sol_json + &swap.y2.to_string() + "," + &swap.x2.to_string() + "]]";
+          if sw + 1 < moves_to_solve.len() {
+            sol_json = sol_json + ", "
+          }
+        }
+        sol_json = sol_json + "], \"board\":[";
+        // For each row in the grid
+        for y in 0.._game_board_orig.height {
+          sol_json = sol_json + "[";
+          // For each column in the grid
+          for x in 0.._game_board_orig.width {
+            sol_json = sol_json + &_game_board_orig.board[y][x].to_string();
+            if x + 1 < _game_board_orig.width {
+              sol_json = sol_json + ",";
+            }
+          }
+          sol_json = sol_json + "]";
+          if y + 1 < _game_board_orig.height {
+            sol_json = sol_json + ",";
+          }
+        }
+        sol_json = sol_json + "]}";
+        println!("Puzzle JSON Solution: (paste into website)\n\n{}\n", sol_json);
     }
 }
 
