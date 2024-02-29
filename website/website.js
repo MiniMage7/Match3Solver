@@ -431,7 +431,7 @@ async function importBoard(e) {
   let importJSONString = "";
 
   if (puzerr !== null) {
-    puzerr.innerHTML = "";  New import means no errors, yet!
+    puzerr.innerHTML = "";  // New import means no errors, yet!
   }
   // Read JSON from clipboard
   try {
